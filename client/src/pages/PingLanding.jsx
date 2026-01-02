@@ -7,7 +7,7 @@ import {
   ChevronRight,
   Sparkles,
   Target,
-  Star
+  Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BentoGrid, BentoCard } from "../components/magicui/BentoGrid";
@@ -58,40 +58,52 @@ const PingLanding = () => {
     {
       Icon: Gamepad2,
       name: "Gaming Portfolio",
-      description: "Showcase your achievements, clips, and gaming journey with a professional profile.",
+      description:
+        "Showcase your achievements, clips, and gaming journey with a professional profile.",
       href: "#",
       cta: "Learn more",
-      background: <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent opacity-50" />,
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent opacity-50" />
+      ),
       className: "col-span-3 lg:col-span-2",
       color: "from-yellow-500 to-amber-500",
     },
     {
       Icon: Users,
       name: "Connect & Network",
-      description: "Build meaningful connections with pro gamers, teams, and esports organizations.",
+      description:
+        "Build meaningful connections with pro gamers, teams, and esports organizations.",
       href: "#",
       cta: "Connect",
-      background: <div className="absolute inset-0 bg-gradient-to-tl from-yellow-600/10 to-transparent opacity-50" />,
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-tl from-yellow-600/10 to-transparent opacity-50" />
+      ),
       className: "col-span-3 lg:col-span-1",
       color: "from-yellow-400 to-yellow-600",
     },
     {
       Icon: Trophy,
       name: "Tournament Hub",
-      description: "Discover, join, and track tournaments. Share your competitive experiences.",
+      description:
+        "Discover, join, and track tournaments. Share your competitive experiences.",
       href: "#",
       cta: "Compete",
-      background: <div className="absolute inset-0 bg-gradient-to-bl from-amber-500/10 to-transparent opacity-50" />,
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-bl from-amber-500/10 to-transparent opacity-50" />
+      ),
       className: "col-span-3 lg:col-span-1",
       color: "from-amber-500 to-orange-500",
     },
     {
       Icon: Zap,
       name: "Real-time Updates",
-      description: "Stay updated with the latest esports news, team announcements, and opportunities.",
+      description:
+        "Stay updated with the latest esports news, team announcements, and opportunities.",
       href: "#",
       cta: "Stay Updated",
-      background: <Globe className="-top-20" />,
+      background: (
+        <Globe className="top-0 left-auto -right-10 translate-x-0 origin-top-right scale-110 md:scale-125" />
+      ),
       className: "col-span-3 lg:col-span-2 relative overflow-hidden",
       color: "from-yellow-300 to-yellow-500",
     },
@@ -196,7 +208,7 @@ const PingLanding = () => {
                 Gaming Career
               </span>
               <br />
-              <span className="text-5xl md:text-6xl bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">
+              <span className="text-5xl md:text-6xl  from-amber-400 to-yellow-300 bg-clip-text text-transparent">
                 in Real-Time
               </span>
             </h1>
@@ -584,4 +596,3 @@ const PingLanding = () => {
 };
 
 export default PingLanding;
-
