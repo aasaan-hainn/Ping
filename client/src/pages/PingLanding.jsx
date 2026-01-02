@@ -102,7 +102,7 @@ const PingLanding = () => {
       href: "#",
       cta: "Stay Updated",
       background: (
-        <Globe className="top-0 left-auto -right-10 translate-x-0 origin-top-right scale-110 md:scale-125" />
+        <Globe className="-top-20 left-auto -right-10 translate-x-0 origin-top-right scale-110 md:scale-125" />
       ),
       className: "col-span-3 lg:col-span-2 relative overflow-hidden",
       color: "from-yellow-300 to-yellow-500",
