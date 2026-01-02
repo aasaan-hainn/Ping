@@ -5,11 +5,13 @@ import {
   Users,
   Zap,
   ChevronRight,
-  Star,
-  Target,
   Sparkles,
+  Target,
+  Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { BentoGrid, BentoCard } from "../components/magicui/BentoGrid";
+import { Globe } from "../components/magicui/Globe";
 
 const PingLanding = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -54,31 +56,55 @@ const PingLanding = () => {
 
   const features = [
     {
-      icon: <Gamepad2 className="w-12 h-12" />,
-      title: "Gaming Portfolio",
+      Icon: Gamepad2,
+      name: "Gaming Portfolio",
       description:
-        "Showcase your achievements, clips, and gaming journey with a professional profile",
+        "Showcase your achievements, clips, and gaming journey with a professional profile.",
+      href: "#",
+      cta: "Learn more",
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent opacity-50" />
+      ),
+      className: "col-span-3 lg:col-span-2",
       color: "from-yellow-500 to-amber-500",
     },
     {
-      icon: <Users className="w-12 h-12" />,
-      title: "Connect & Network",
+      Icon: Users,
+      name: "Connect & Network",
       description:
-        "Build meaningful connections with pro gamers, teams, and esports organizations",
+        "Build meaningful connections with pro gamers, teams, and esports organizations.",
+      href: "#",
+      cta: "Connect",
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-tl from-yellow-600/10 to-transparent opacity-50" />
+      ),
+      className: "col-span-3 lg:col-span-1",
       color: "from-yellow-400 to-yellow-600",
     },
     {
-      icon: <Trophy className="w-12 h-12" />,
-      title: "Tournament Hub",
+      Icon: Trophy,
+      name: "Tournament Hub",
       description:
-        "Discover, join, and track tournaments. Share your competitive experiences",
+        "Discover, join, and track tournaments. Share your competitive experiences.",
+      href: "#",
+      cta: "Compete",
+      background: (
+        <div className="absolute inset-0 bg-gradient-to-bl from-amber-500/10 to-transparent opacity-50" />
+      ),
+      className: "col-span-3 lg:col-span-1",
       color: "from-amber-500 to-orange-500",
     },
     {
-      icon: <Zap className="w-12 h-12" />,
-      title: "Real-time Updates",
+      Icon: Zap,
+      name: "Real-time Updates",
       description:
-        "Stay updated with the latest esports news, team announcements, and opportunities",
+        "Stay updated with the latest esports news, team announcements, and opportunities.",
+      href: "#",
+      cta: "Stay Updated",
+      background: (
+        <Globe className="-top-20 left-auto -right-10 translate-x-0 origin-top-right scale-110 md:scale-125" />
+      ),
+      className: "col-span-3 lg:col-span-2 relative overflow-hidden",
       color: "from-yellow-300 to-yellow-500",
     },
   ];
@@ -182,7 +208,7 @@ const PingLanding = () => {
                 Gaming Career
               </span>
               <br />
-              <span className="text-5xl md:text-6xl bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">
+              <span className="text-5xl md:text-6xl  from-amber-400 to-yellow-300 bg-clip-text text-transparent">
                 in Real-Time
               </span>
             </h1>
@@ -291,36 +317,11 @@ const PingLanding = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="group relative bg-black bg-opacity-70 backdrop-blur-lg rounded-2xl p-8 border border-yellow-500 border-opacity-30 hover:border-opacity-100 hover:border-yellow-400 transition-all duration-500 hover:transform hover:scale-105 cursor-pointer hover:shadow-2xl hover:shadow-yellow-500/40"
-                style={{ animationDelay: `${index * 150}ms` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500 to-amber-600 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
-
-                <div
-                  className={`w-20 h-20 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-6 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-yellow-500/50`}
-                >
-                  {React.cloneElement(feature.icon, {
-                    className: "w-12 h-12 text-black",
-                  })}
-                </div>
-
-                <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-yellow-300 transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
-                  {feature.description}
-                </p>
-
-                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ChevronRight className="w-6 h-6 text-yellow-400" />
-                </div>
-              </div>
+          <BentoGrid className="lg:grid-rows-2">
+            {features.map((feature) => (
+              <BentoCard key={feature.name} {...feature} />
             ))}
-          </div>
+          </BentoGrid>
         </div>
       </section>
 
