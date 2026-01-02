@@ -1,5 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Gamepad2, Trophy, Users, Zap, ChevronRight, Star, Target, Sparkles } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Gamepad2,
+  Trophy,
+  Users,
+  Zap,
+  ChevronRight,
+  Star,
+  Target,
+  Sparkles,
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
 const PingLanding = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -15,21 +25,21 @@ const PingLanding = () => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouseMove);
 
     // Intersection Observer for scroll animations
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
+            entry.target.classList.add("animate-in");
           } else {
-            entry.target.classList.remove('animate-in');
+            entry.target.classList.remove("animate-in");
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     [featuresRef, statsRef, ctaRef].forEach((ref) => {
@@ -37,8 +47,8 @@ const PingLanding = () => {
     });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
@@ -46,40 +56,42 @@ const PingLanding = () => {
     {
       icon: <Gamepad2 className="w-12 h-12" />,
       title: "Gaming Portfolio",
-      description: "Showcase your achievements, clips, and gaming journey with a professional profile",
-      color: "from-yellow-500 to-amber-500"
+      description:
+        "Showcase your achievements, clips, and gaming journey with a professional profile",
+      color: "from-yellow-500 to-amber-500",
     },
     {
       icon: <Users className="w-12 h-12" />,
       title: "Connect & Network",
-      description: "Build meaningful connections with pro gamers, teams, and esports organizations",
-      color: "from-yellow-400 to-yellow-600"
+      description:
+        "Build meaningful connections with pro gamers, teams, and esports organizations",
+      color: "from-yellow-400 to-yellow-600",
     },
     {
       icon: <Trophy className="w-12 h-12" />,
       title: "Tournament Hub",
-      description: "Discover, join, and track tournaments. Share your competitive experiences",
-      color: "from-amber-500 to-orange-500"
+      description:
+        "Discover, join, and track tournaments. Share your competitive experiences",
+      color: "from-amber-500 to-orange-500",
     },
     {
       icon: <Zap className="w-12 h-12" />,
       title: "Real-time Updates",
-      description: "Stay updated with the latest esports news, team announcements, and opportunities",
-      color: "from-yellow-300 to-yellow-500"
-    }
+      description:
+        "Stay updated with the latest esports news, team announcements, and opportunities",
+      color: "from-yellow-300 to-yellow-500",
+    },
   ];
 
   const stats = [
     { number: "50K+", label: "Pro Gamers", icon: <Target /> },
     { number: "200+", label: "Esports Teams", icon: <Users /> },
     { number: "1000+", label: "Tournaments", icon: <Trophy /> },
-    { number: "24/7", label: "Active Community", icon: <Sparkles /> }
+    { number: "24/7", label: "Active Community", icon: <Sparkles /> },
   ];
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
-
-
       {/* Animated Lightning Effect */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         {[...Array(5)].map((_, i) => (
@@ -88,17 +100,17 @@ const PingLanding = () => {
             className="absolute w-1 bg-gradient-to-b from-yellow-400 via-yellow-500 to-transparent animate-lightning"
             style={{
               left: `${20 + i * 20}%`,
-              height: '100%',
+              height: "100%",
               animationDelay: `${i * 1.5}s`,
               animationDuration: `${3 + Math.random() * 2}s`,
-              opacity: 0.3
+              opacity: 0.3,
             }}
           />
         ))}
       </div>
 
       {/* Mouse Glow Effect */}
-      <div 
+      <div
         className="fixed w-[300px] h-[300px] bg-yellow-400 rounded-full filter blur-[80px] opacity-40 pointer-events-none z-50 transition-opacity duration-300"
         style={{
           left: `${mousePos.x - 150}px`,
@@ -110,8 +122,6 @@ const PingLanding = () => {
       <div className="fixed inset-0 pointer-events-none opacity-10">
         <div className="w-full h-full bg-gradient-to-b from-transparent via-yellow-500 to-transparent animate-scan" />
       </div>
-
-
 
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-80 backdrop-blur-lg border-b border-yellow-500 border-opacity-30">
@@ -125,9 +135,9 @@ const PingLanding = () => {
               Ping
             </span>
           </div>
-          
+
           <div className="hidden md:flex space-x-8">
-            {['Features', 'Community', 'Tournaments', 'About'].map((item) => (
+            {["Features", "Community", "Tournaments", "About"].map((item) => (
               <button
                 key={item}
                 className="relative text-gray-300 hover:text-yellow-400 transition-colors group"
@@ -140,18 +150,21 @@ const PingLanding = () => {
 
           <div className="flex space-x-4">
             <button className="px-6 py-2 text-white hover:text-yellow-400 transition-colors">
-              Login
+              <Link to={"/login"}>Login</Link>
             </button>
             <button className="px-6 py-2 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-full font-semibold hover:shadow-lg hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300 text-black">
-              Register
+              <Link to={"/register"}>Register</Link>
             </button>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center pt-20 px-6">
-        <div 
+      <section
+        ref={heroRef}
+        className="relative min-h-screen flex items-center justify-center pt-20 px-6"
+      >
+        <div
           className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center"
           style={{ transform: `translateY(${scrollY * 0.3}px)` }}
         >
@@ -159,13 +172,15 @@ const PingLanding = () => {
             <div className="inline-block px-4 py-2 bg-yellow-500 bg-opacity-20 rounded-full border border-yellow-500 border-opacity-50 animate-pulse-glow">
               <span className="text-yellow-400 font-semibold">Ping</span>
             </div>
-            
+
             <h1 className="text-6xl md:text-7xl font-bold leading-tight">
               <span className="bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent animate-gradient">
                 Level Up Your
               </span>
               <br />
-              <span className="text-white drop-shadow-[0_0_30px_rgba(250,204,21,0.5)]">Gaming Career</span>
+              <span className="text-white drop-shadow-[0_0_30px_rgba(250,204,21,0.5)]">
+                Gaming Career
+              </span>
               <br />
               <span className="text-5xl md:text-6xl bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">
                 in Real-Time
@@ -173,8 +188,9 @@ const PingLanding = () => {
             </h1>
 
             <p className="text-xl text-gray-300 leading-relaxed">
-              The ultimate platform for professional gamers to showcase achievements, 
-              connect with teams, and build their esports legacy. Your gaming LinkedIn starts here.
+              The ultimate platform for professional gamers to showcase
+              achievements, connect with teams, and build their esports legacy.
+              Your gaming LinkedIn starts here.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -182,7 +198,7 @@ const PingLanding = () => {
                 <span>Start Your Journey</span>
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              
+
               <button className="px-8 py-4 bg-transparent border-2 border-yellow-500 rounded-full font-bold text-lg hover:bg-yellow-500 hover:bg-opacity-20 hover:shadow-lg hover:shadow-yellow-500/50 transform hover:scale-105 transition-all duration-300 text-yellow-400">
                 Watch Demo
               </button>
@@ -197,15 +213,15 @@ const PingLanding = () => {
                 <div className="relative w-40 h-40 bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-yellow-500/80 animate-float">
                   <Gamepad2 className="w-24 h-24 text-black" />
                   <div className="absolute inset-0 bg-yellow-300 rounded-3xl blur-2xl opacity-60 animate-pulse-slow" />
-                  
+
                   {/* Electric sparks around controller */}
                   {[...Array(8)].map((_, i) => (
                     <div
                       key={i}
                       className="absolute w-2 h-2 bg-yellow-300 rounded-full animate-spark"
                       style={{
-                        top: '50%',
-                        left: '50%',
+                        top: "50%",
+                        left: "50%",
                         transform: `rotate(${i * 45}deg) translateX(80px)`,
                         animationDelay: `${i * 0.2}s`,
                       }}
@@ -215,38 +231,44 @@ const PingLanding = () => {
               </div>
 
               {/* Orbiting Icons with Trails */}
-              {[Trophy, Users, Target, Star, Zap, Sparkles].map((Icon, index) => (
-                <div
-                  key={index}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                >
+              {[Trophy, Users, Target, Star, Zap, Sparkles].map(
+                (Icon, index) => (
                   <div
-                    className="animate-orbit"
-                    style={{
-                      animationDelay: `${index * 1}s`,
-                      animationDuration: '8s',
-                    }}
+                    key={index}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                   >
-                    <div className="relative w-20 h-20 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/70 hover:scale-125 transition-transform cursor-pointer">
-                      <Icon className="w-10 h-10 text-black" />
-                      <div className="absolute inset-0 bg-yellow-400 rounded-2xl blur-md opacity-50" />
+                    <div
+                      className="animate-orbit"
+                      style={{
+                        animationDelay: `${index * 1}s`,
+                        animationDuration: "8s",
+                      }}
+                    >
+                      <div className="relative w-20 h-20 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/70 hover:scale-125 transition-transform cursor-pointer">
+                        <Icon className="w-10 h-10 text-black" />
+                        <div className="absolute inset-0 bg-yellow-400 rounded-2xl blur-md opacity-50" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
 
               {/* Stats Cards */}
               <div className="absolute top-10 right-10 bg-black bg-opacity-70 backdrop-blur-lg rounded-2xl p-4 border border-yellow-500 border-opacity-50 animate-slide-in-right animation-delay-1000 shadow-lg shadow-yellow-500/30">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse-fast shadow-lg shadow-yellow-400" />
-                  <span className="text-sm text-yellow-200">50K+ Active Users</span>
+                  <span className="text-sm text-yellow-200">
+                    50K+ Active Users
+                  </span>
                 </div>
               </div>
 
               <div className="absolute bottom-10 left-10 bg-black bg-opacity-70 backdrop-blur-lg rounded-2xl p-4 border border-yellow-500 border-opacity-50 animate-slide-in-left animation-delay-1500 shadow-lg shadow-yellow-500/30">
                 <div className="flex items-center space-x-2">
                   <Trophy className="w-5 h-5 text-yellow-400" />
-                  <span className="text-sm text-yellow-200">1000+ Tournaments</span>
+                  <span className="text-sm text-yellow-200">
+                    1000+ Tournaments
+                  </span>
                 </div>
               </div>
             </div>
@@ -255,13 +277,18 @@ const PingLanding = () => {
       </section>
 
       {/* Features Section */}
-      <section ref={featuresRef} className="relative py-32 px-6 mt-20 scroll-animate">
+      <section
+        ref={featuresRef}
+        className="relative py-32 px-6 mt-20 scroll-animate"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-5xl font-bold bg-gradient-to-r from-yellow-300 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(250,204,21,0.5)]">
               Power-Up Your Profile
             </h2>
-            <p className="text-xl text-gray-400">Everything you need to dominate the esports scene</p>
+            <p className="text-xl text-gray-400">
+              Everything you need to dominate the esports scene
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -272,13 +299,21 @@ const PingLanding = () => {
                 style={{ animationDelay: `${index * 150}ms` }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-yellow-500 to-amber-600 opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl" />
-                
-                <div className={`w-20 h-20 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-6 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-yellow-500/50`}>
-                  {React.cloneElement(feature.icon, { className: "w-12 h-12 text-black" })}
+
+                <div
+                  className={`w-20 h-20 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-6 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-yellow-500/50`}
+                >
+                  {React.cloneElement(feature.icon, {
+                    className: "w-12 h-12 text-black",
+                  })}
                 </div>
 
-                <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-yellow-300 transition-colors">{feature.title}</h3>
-                <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">{feature.description}</p>
+                <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-yellow-300 transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
+                  {feature.description}
+                </p>
 
                 <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <ChevronRight className="w-6 h-6 text-yellow-400" />
@@ -300,12 +335,16 @@ const PingLanding = () => {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl mb-4 transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 shadow-lg shadow-yellow-500/70">
-                  {React.cloneElement(stat.icon, { className: "w-8 h-8 text-black" })}
+                  {React.cloneElement(stat.icon, {
+                    className: "w-8 h-8 text-black",
+                  })}
                 </div>
                 <div className="text-5xl font-bold bg-gradient-to-r from-yellow-300 to-amber-500 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]">
                   {stat.number}
                 </div>
-                <div className="text-gray-400 text-lg group-hover:text-yellow-400 transition-colors">{stat.label}</div>
+                <div className="text-gray-400 text-lg group-hover:text-yellow-400 transition-colors">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -321,7 +360,7 @@ const PingLanding = () => {
             </h2>
             <div className="absolute -inset-4 bg-gradient-to-r from-yellow-500 to-amber-600 blur-3xl opacity-40 animate-pulse" />
           </div>
-          
+
           <p className="text-2xl text-gray-300">
             Join thousands of pro gamers building their legacy on Ping
           </p>
@@ -350,23 +389,44 @@ const PingLanding = () => {
 
       <style jsx>{`
         @keyframes gradient {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+          0%,
+          100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
         }
 
         @keyframes lightning {
-          0%, 100% { opacity: 0.1; transform: translateY(0); }
-          50% { opacity: 0.5; transform: translateY(-20px); }
+          0%,
+          100% {
+            opacity: 0.1;
+            transform: translateY(0);
+          }
+          50% {
+            opacity: 0.5;
+            transform: translateY(-20px);
+          }
         }
 
         @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-30px) rotate(5deg); }
+          0%,
+          100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-30px) rotate(5deg);
+          }
         }
 
         @keyframes orbit {
-          0% { transform: rotate(0deg) translateX(200px) rotate(0deg); }
-          100% { transform: rotate(360deg) translateX(200px) rotate(-360deg); }
+          0% {
+            transform: rotate(0deg) translateX(200px) rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg) translateX(200px) rotate(-360deg);
+          }
         }
 
         @keyframes slideInLeft {
@@ -392,50 +452,74 @@ const PingLanding = () => {
         }
 
         @keyframes scan {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100%); }
+          0% {
+            transform: translateY(-100%);
+          }
+          100% {
+            transform: translateY(100%);
+          }
         }
 
         @keyframes floatParticle {
-          0%, 100% { 
-            transform: translate(0, 0); 
+          0%,
+          100% {
+            transform: translate(0, 0);
             opacity: 0;
           }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          50% { 
-            transform: translate(calc(var(--tw-translate-x) + 100px), calc(var(--tw-translate-y) - 200px));
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          50% {
+            transform: translate(
+              calc(var(--tw-translate-x) + 100px),
+              calc(var(--tw-translate-y) - 200px)
+            );
           }
         }
 
         @keyframes spark {
-          0%, 100% { 
+          0%,
+          100% {
             opacity: 0;
             transform: scale(0);
           }
-          50% { 
+          50% {
             opacity: 1;
             transform: scale(1.5);
           }
         }
 
         @keyframes pulseGlow {
-          0%, 100% { 
+          0%,
+          100% {
             box-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
           }
-          50% { 
+          50% {
             box-shadow: 0 0 40px rgba(250, 204, 21, 0.8);
           }
         }
 
         @keyframes pulseSlow {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.5; }
+          0%,
+          100% {
+            opacity: 0.3;
+          }
+          50% {
+            opacity: 0.5;
+          }
         }
 
         @keyframes pulseFast {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
         }
 
         .animate-gradient {
@@ -511,3 +595,4 @@ const PingLanding = () => {
 };
 
 export default PingLanding;
+
