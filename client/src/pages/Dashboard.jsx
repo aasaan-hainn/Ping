@@ -31,8 +31,8 @@ const Navbar = ({ user, logout }) => (
     <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
       <Link to="/" className="flex items-center gap-2 group">
         <div className="relative">
-          <Gamepad2 className="w-8 h-8 text-yellow-500 transition-transform group-hover:rotate-12" />
-          <div className="absolute inset-0 bg-yellow-500 blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
+          <Gamepad2 className="w-8 h-8 text-lime-500 transition-transform group-hover:rotate-12" />
+          <div className="absolute inset-0 bg-lime-500 blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
         </div>
         <span className="font-bold text-xl tracking-tight hidden md:block">
           Ping
@@ -57,7 +57,7 @@ const Navbar = ({ user, logout }) => (
         <div className="flex items-center gap-3 pl-6 border-l border-white/10">
           <Avatar
             src={user?.avatar}
-            className="w-8 h-8 border border-yellow-500/50"
+            className="w-8 h-8 border border-lime-500/50"
           >
             {user?.username?.charAt(0).toUpperCase()}
           </Avatar>
@@ -73,7 +73,7 @@ const Navbar = ({ user, logout }) => (
   </nav>
 );
 
-const StatBar = ({ label, value, color = "bg-yellow-500" }) => (
+const StatBar = ({ label, value, color = "bg-lime-500" }) => (
   <div className="mb-3">
     <div className="flex justify-between text-xs mb-1">
       <span className="text-slate-400">{label}</span>
@@ -92,13 +92,13 @@ const StatBar = ({ label, value, color = "bg-yellow-500" }) => (
 
 const GameCard = ({ game, role, rank, icon: Icon }) => (
   <div className="bg-white/5 border border-white/5 rounded-xl p-4 flex items-center gap-4 hover:bg-white/10 transition-colors cursor-pointer group">
-    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-slate-800 to-black flex items-center justify-center border border-white/10 group-hover:border-yellow-500/50 transition-colors">
-      <Icon className="w-6 h-6 text-yellow-500" />
+    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-slate-800 to-black flex items-center justify-center border border-white/10 group-hover:border-lime-500/50 transition-colors">
+      <Icon className="w-6 h-6 text-lime-500" />
     </div>
     <div>
       <h4 className="font-bold text-slate-200">{game}</h4>
       <p className="text-xs text-slate-400">
-        {role} • <span className="text-yellow-500">{rank}</span>
+        {role} • <span className="text-lime-500">{rank}</span>
       </p>
     </div>
   </div>
@@ -108,7 +108,7 @@ const PostCard = ({ post }) => (
   <div className="bg-[#1b1f23] rounded-2xl border border-white/10 overflow-hidden h-full flex flex-col">
     {/* Post Header */}
     <div className="p-4 flex items-center gap-3 border-b border-white/5">
-      <Avatar className="w-10 h-10 border border-yellow-500/20">
+      <Avatar className="w-10 h-10 border border-lime-500/20">
         {post.author[0]}
       </Avatar>
       <div>
@@ -145,7 +145,7 @@ const PostCard = ({ post }) => (
         <button className="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-colors text-sm group">
           <Heart className="w-4 h-4 group-hover:fill-red-500" /> {post.likes}
         </button>
-        <button className="flex items-center gap-2 text-slate-400 hover:text-yellow-500 transition-colors text-sm">
+        <button className="flex items-center gap-2 text-slate-400 hover:text-lime-500 transition-colors text-sm">
           <MessageSquare className="w-4 h-4" /> {post.comments}
         </button>
       </div>
@@ -257,10 +257,10 @@ const Dashboard = () => {
   if (loading) return null;
 
   return (
-    <div className="min-h-screen bg-black text-slate-200 font-sans selection:bg-yellow-500/30 overflow-hidden relative">
+    <div className="min-h-screen bg-black text-slate-200 font-sans selection:bg-lime-500/30 overflow-hidden relative">
       {/* Mouse Glow Effect */}
       <div
-        className="fixed w-[300px] h-[300px] bg-yellow-400 rounded-full filter blur-[100px] opacity-20 pointer-events-none z-0 transition-opacity duration-300"
+        className="fixed w-[300px] h-[300px] bg-lime-400 rounded-full filter blur-[100px] opacity-20 pointer-events-none z-0 transition-opacity duration-300"
         style={{
           left: `${mousePos.x - 150}px`,
           top: `${mousePos.y - 150}px`,
@@ -299,7 +299,7 @@ const Dashboard = () => {
             <div className="mt-4 text-center">
               <h1 className="text-3xl font-bold text-white flex items-center justify-center gap-2">
                 {user?.username}
-                <Zap className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                <Zap className="w-5 h-5 text-lime-500 fill-lime-500" />
               </h1>
               <p className="text-slate-400 font-medium mt-1">
                 Professional FPS Player | Content Creator
@@ -317,7 +317,7 @@ const Dashboard = () => {
             className="md:col-span-2 bg-[#1b1f23] border border-white/5 rounded-2xl p-6"
           >
             <div className="flex items-center gap-2 mb-6">
-              <Gamepad2 className="w-5 h-5 text-yellow-500" />
+              <Gamepad2 className="w-5 h-5 text-lime-500" />
               <h3 className="font-bold text-lg text-white">
                 Focus Game & Experience
               </h3>
@@ -327,8 +327,8 @@ const Dashboard = () => {
               {games.map((game, i) => (
                 <GameCard key={i} {...game} />
               ))}
-              <div className="border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center text-slate-500 hover:border-yellow-500/50 hover:text-yellow-500 transition-all cursor-pointer group h-full min-h-[80px]">
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mb-2 group-hover:bg-yellow-500/20 transition-colors">
+              <div className="border-2 border-dashed border-white/10 rounded-xl p-4 flex flex-col items-center justify-center text-slate-500 hover:border-lime-500/50 hover:text-lime-500 transition-all cursor-pointer group h-full min-h-[80px]">
+                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mb-2 group-hover:bg-lime-500/20 transition-colors">
                   <span className="text-lg">+</span>
                 </div>
                 <span className="text-xs font-medium">Add Game</span>
@@ -344,7 +344,7 @@ const Dashboard = () => {
             className="bg-[#1b1f23] border border-white/5 rounded-2xl p-6"
           >
             <div className="flex items-center gap-2 mb-6">
-              <Brain className="w-5 h-5 text-yellow-500" />
+              <Brain className="w-5 h-5 text-lime-500" />
               <h3 className="font-bold text-lg text-white">Stats Graph</h3>
             </div>
 
@@ -365,10 +365,10 @@ const Dashboard = () => {
         >
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-yellow-500" />
+              <Users className="w-5 h-5 text-lime-500" />
               <h3 className="font-bold text-lg text-white">Connections</h3>
             </div>
-            <button className="text-xs text-yellow-500 hover:underline">
+            <button className="text-xs text-lime-500 hover:underline">
               View All
             </button>
           </div>
@@ -379,7 +379,7 @@ const Dashboard = () => {
                 key={i}
                 className="flex flex-col items-center min-w-[80px] group cursor-pointer"
               >
-                <div className="w-14 h-14 rounded-full bg-slate-800 border-2 border-slate-700 group-hover:border-yellow-500 transition-colors mb-2 overflow-hidden">
+                <div className="w-14 h-14 rounded-full bg-slate-800 border-2 border-slate-700 group-hover:border-lime-500 transition-colors mb-2 overflow-hidden">
                   <img
                     src={`https://i.pravatar.cc/150?u=${i}`}
                     alt="User"
@@ -421,11 +421,10 @@ const Dashboard = () => {
                     setPostTab(tab);
                     setCurrentPostIndex(0);
                   }}
-                  className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
-                    postTab === tab
-                      ? "bg-yellow-500 text-black shadow-lg shadow-yellow-500/20"
+                  className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${postTab === tab
+                      ? "bg-lime-500 text-black shadow-lg shadow-lime-500/20"
                       : "text-slate-400 hover:text-white"
-                  }`}
+                    }`}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </button>
@@ -453,13 +452,13 @@ const Dashboard = () => {
             {/* Navigation Arrows */}
             <button
               onClick={prevPost}
-              className="absolute top-1/2 -left-4 md:-left-12 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-yellow-500 hover:text-black transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0"
+              className="absolute top-1/2 -left-4 md:-left-12 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-lime-500 hover:text-black transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={nextPost}
-              className="absolute top-1/2 -right-4 md:-right-12 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-yellow-500 hover:text-black transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0"
+              className="absolute top-1/2 -right-4 md:-right-12 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-lime-500 hover:text-black transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -470,11 +469,10 @@ const Dashboard = () => {
                 <button
                   key={idx}
                   onClick={() => setCurrentPostIndex(idx)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    idx === currentPostIndex
-                      ? "bg-yellow-500 w-6"
+                  className={`w-2 h-2 rounded-full transition-all ${idx === currentPostIndex
+                      ? "bg-lime-500 w-6"
                       : "bg-slate-700 hover:bg-slate-500"
-                  }`}
+                    }`}
                 />
               ))}
             </div>

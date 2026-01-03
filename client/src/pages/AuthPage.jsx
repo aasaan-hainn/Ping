@@ -24,12 +24,12 @@ const AuthPage = () => {
     <div className="min-h-screen bg-black text-white overflow-hidden relative flex items-center justify-center px-6 py-12">
       {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-yellow-900/10 to-transparent animate-scan" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-lime-900/10 to-transparent animate-scan" />
       </div>
 
       {/* Mouse Glow Effect */}
       <div
-        className="fixed w-[400px] h-[400px] bg-yellow-500/20 rounded-full filter blur-[100px] pointer-events-none z-0 transition-opacity duration-300"
+        className="fixed w-[400px] h-[400px] bg-lime-500/20 rounded-full filter blur-[100px] pointer-events-none z-0 transition-opacity duration-300"
         style={{
           left: `${mousePos.x - 200}px`,
           top: `${mousePos.y - 200}px`,
@@ -41,27 +41,27 @@ const AuthPage = () => {
         <div className="text-center mb-8 group cursor-pointer">
           <Link to="/" className="inline-flex items-center space-x-3">
             <div className="relative">
-              <Gamepad2 className="w-10 h-10 text-yellow-400 transform group-hover:rotate-12 transition-transform duration-300" />
-              <div className="absolute inset-0 bg-yellow-500 blur-xl opacity-0 group-hover:opacity-70 transition-opacity" />
+              <Gamepad2 className="w-10 h-10 text-lime-400 transform group-hover:rotate-12 transition-transform duration-300" />
+              <div className="absolute inset-0 bg-lime-500 blur-xl opacity-0 group-hover:opacity-70 transition-opacity" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-lime-400 via-lime-400 to-lime-500 bg-clip-text text-transparent">
               Ping
             </h1>
           </Link>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex p-1 bg-black/50 backdrop-blur-md rounded-xl border border-yellow-500/30 mb-6 relative">
+        <div className="flex p-1 bg-black/50 backdrop-blur-md rounded-xl border border-lime-500/30 mb-6 relative">
           <Link to="/login" className="flex-1 relative z-10">
             <button
-              className={`w-full py-3 text-sm font-bold rounded-lg transition-colors ${isLogin ? "text-black" : "text-gray-400 hover:text-yellow-400"}`}
+              className={`w-full py-3 text-sm font-bold rounded-lg transition-colors ${isLogin ? "text-black" : "text-gray-400 hover:text-lime-400"}`}
             >
               Login
             </button>
           </Link>
           <Link to="/register" className="flex-1 relative z-10">
             <button
-              className={`w-full py-3 text-sm font-bold rounded-lg transition-colors ${!isLogin ? "text-black" : "text-gray-400 hover:text-yellow-400"}`}
+              className={`w-full py-3 text-sm font-bold rounded-lg transition-colors ${!isLogin ? "text-black" : "text-gray-400 hover:text-lime-400"}`}
             >
               Register
             </button>
@@ -69,12 +69,12 @@ const AuthPage = () => {
 
           {/* Animated Background for Tab */}
           <div
-            className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-gradient-to-r from-yellow-500 to-amber-500 rounded-lg transition-transform duration-300 ease-in-out ${isLogin ? "translate-x-0" : "translate-x-[calc(100%+8px)]"}`}
+            className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-gradient-to-r from-lime-500 to-lime-600 rounded-lg transition-transform duration-300 ease-in-out ${isLogin ? "translate-x-0" : "translate-x-[calc(100%+8px)]"}`}
           />
         </div>
 
         {/* Forms Container */}
-        <div className="relative overflow-hidden h-[600px] glass-card shadow-2xl shadow-yellow-500/10 flex flex-col justify-center">
+        <div className="relative overflow-hidden h-[600px] glass-card shadow-2xl shadow-lime-500/10 flex flex-col justify-center">
           <AnimatePresence mode="wait" initial={false}>
             {isLogin ? (
               <motion.div

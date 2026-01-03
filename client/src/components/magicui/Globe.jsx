@@ -20,9 +20,9 @@ export const Globe = ({ className }) => {
             diffuse: 2.5,
             mapSamples: 16000,
             mapBrightness: 12,
-            baseColor: [0.8, 0.6, 0.1],
-            markerColor: [1, 0.9, 0.2],
-            glowColor: [1, 0.9, 0.3],
+            baseColor: [0.3, 0.6, 0.1],
+            markerColor: [0.5, 0.8, 0.1],
+            glowColor: [0.5, 0.8, 0.2],
             opacity: 1,
             markers: [
                 // longitude latitude
