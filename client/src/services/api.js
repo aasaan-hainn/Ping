@@ -26,7 +26,7 @@ api.interceptors.response.use(
         const originalRequest = error.config
         if (error.response?.status === 401 && !originalRequest._retry) {
             // Only redirect if not already on auth pages
-            if (!window.location.pathname.includes('/login') && 
+            if (!window.location.pathname.includes('/login') &&
                 !window.location.pathname.includes('/register')) {
                 localStorage.removeItem('token')
                 window.location.href = '/login'
@@ -87,6 +87,25 @@ export const uploadService = {
     uploadImage: (formData) => api.post('/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     }),
+}
+
+export const profileService = {
+    // Get profile data
+    getData: () => api.get('/profile/data'),
+    getDataByUsername: (username) => api.get(`/profile/data/${username}`),
+
+    // Team History
+    addTeam: (data) => api.post('/profile/team-history', data),
+    updateTeam: (id, data) => api.put(`/profile/team-history/${id}`, data),
+    deleteTeam: (id) => api.delete(`/profile/team-history/${id}`),
+
+    // Tournament Experience
+    addTournament: (data) => api.post('/profile/tournaments', data),
+    updateTournament: (id, data) => api.put(`/profile/tournaments/${id}`, data),
+    deleteTournament: (id) => api.delete(`/profile/tournaments/${id}`),
+
+    // Gaming Setup
+    updateSetup: (data) => api.put('/profile/setup', data),
 }
 
 export default api
