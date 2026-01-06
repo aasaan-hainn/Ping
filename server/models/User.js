@@ -53,6 +53,29 @@ const userSchema = new mongoose.Schema(
             psn: { type: String, default: '' },
             xbox: { type: String, default: '' },
         },
+        // Team History - Player's past teams
+        teamHistory: [{
+            name: { type: String, required: true },
+            logo: { type: String, default: '' },
+            details: { type: String, default: '' },
+            startDate: { type: Date },
+            endDate: { type: Date }
+        }],
+        // Tournament Experience
+        tournamentExperience: [{
+            name: { type: String, required: true },
+            placement: { type: String, default: '' },
+            date: { type: Date }
+        }],
+        // Gaming Setup Config
+        gamingSetup: {
+            dpi: { type: Number, default: 800 },
+            sensitivity: { type: Number, default: 0.35 },
+            aspectRatio: { type: String, default: '16:9' },
+            resolution: { type: String, default: '1920x1080' },
+            mouse: { type: String, default: '' },
+            crosshairCode: { type: String, default: '' }
+        },
         status: {
             type: String,
             enum: ['online', 'offline', 'away', 'busy'],

@@ -23,10 +23,19 @@ import {
   Settings,
   Camera,
   Upload,
+  History,
+  Medal,
+  Monitor,
+  Download,
+  Pencil,
+  Mouse,
+  Copy,
+  Trash2,
+  Plus,
 } from "lucide-react";
-import { Avatar, Modal, Box, IconButton, InputBase, Badge, Menu, MenuItem, Typography, Button } from "@mui/material";
+import { Avatar, Modal, Box, IconButton, InputBase, Badge, Menu, MenuItem, Typography, Button, TextField } from "@mui/material";
 import { X, Check } from "lucide-react";
-import { userService, notificationService, connectionService, messageService, uploadService } from "../services/api";
+import { userService, notificationService, connectionService, messageService, uploadService, profileService } from "../services/api";
 
 // --- Helper Components ---
 const NotificationMenu = ({ anchorEl, open, onClose, notifications, onAccept, onMarkRead, onOpenChat }) => {
@@ -926,6 +935,697 @@ const PostCard = ({ post }) => (
   </div>
 );
 
+// --- Team History Card with Glowing Aura ---
+const TeamHistoryCard = ({ team }) => (
+  <div className="relative min-w-[220px] max-w-[220px] group flex-shrink-0">
+    {/* Glowing lime aura effect */}
+    <div className="absolute inset-0 bg-lime-500/20 blur-xl rounded-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-300" />
+    <div className="absolute inset-0 bg-lime-400/10 blur-2xl rounded-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-500 scale-110" />
+
+    {/* Card content */}
+    <div className="relative bg-[#1b1f23] border border-lime-500/30 group-hover:border-lime-500/60 rounded-2xl p-5 transition-all duration-300 h-full">
+      <div className="flex items-center gap-3 mb-3">
+        {/* Team Logo */}
+        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 border-2 border-lime-500/40 flex items-center justify-center overflow-hidden">
+          {team.logo ? (
+            <img src={team.logo} alt={team.name} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-lime-500 font-bold text-lg">{team.name?.[0]}</span>
+          )}
+        </div>
+        {/* Team Name */}
+        <h4 className="font-bold text-white text-sm">{team.name}</h4>
+      </div>
+
+      {/* Details */}
+      <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">
+        {team.details}
+      </p>
+    </div>
+  </div>
+);
+
+// --- Team History Timeline ---
+const TeamHistoryTimeline = ({ teams, isOwnProfile, onEdit, onAdd, onDelete }) => {
+  const scrollContainerRef = React.useRef(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -240, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 240, behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.25 }}
+      className="bg-[#1b1f23] border border-white/5 rounded-2xl p-6 mb-6"
+    >
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <History className="w-5 h-5 text-lime-500" />
+          <h3 className="font-bold text-lg text-white">Team History Timeline</h3>
+        </div>
+        {isOwnProfile && (
+          <button
+            onClick={onAdd}
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            <Pencil className="w-4 h-4 text-slate-400 hover:text-lime-500" />
+          </button>
+        )}
+      </div>
+
+      <div className="relative group overflow-visible">
+        {/* Left Arrow */}
+        <button
+          onClick={scrollLeft}
+          className="absolute -left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/90 backdrop-blur-md border border-lime-500/30 flex items-center justify-center text-white hover:bg-lime-500 hover:text-black transition-all opacity-0 group-hover:opacity-100 shadow-lg shadow-black/50"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+
+        {/* Scrollable Container */}
+        <div
+          ref={scrollContainerRef}
+          className="flex gap-5 overflow-x-auto overflow-y-visible pt-4 pb-4 scrollbar-hide scroll-smooth px-6 mx-4"
+        >
+          {teams.length > 0 ? (
+            teams.map((team) => (
+              <div key={team._id || team.id} className="relative min-w-[220px] max-w-[220px] group/card flex-shrink-0">
+                {/* Animated Green Flame Effect */}
+                <div className="flame-container">
+                  <div className="flame-layer-1" />
+                  <div className="flame-layer-2" />
+                  <div className="flame-layer-3" />
+                  {/* Ember particles */}
+                  <div className="ember-particle" />
+                  <div className="ember-particle" />
+                  <div className="ember-particle" />
+                  <div className="ember-particle" />
+                  <div className="ember-particle" />
+                </div>
+
+                {/* Animated glowing border */}
+                <div className="flame-glow-border" />
+
+                {/* Card content */}
+                <div className="relative bg-[#1b1f23] border border-lime-500/30 group-hover/card:border-lime-500/60 rounded-2xl p-5 transition-all duration-300 h-full z-10">
+                  <div className="flex items-center gap-3 mb-3">
+                    {/* Team Logo */}
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 border-2 border-lime-500/40 flex items-center justify-center overflow-hidden">
+                      {team.logo ? (
+                        <img src={team.logo} alt={team.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-lime-500 font-bold text-lg">{team.name?.[0]}</span>
+                      )}
+                    </div>
+                    {/* Team Name */}
+                    <h4 className="font-bold text-white text-sm flex-1">{team.name}</h4>
+
+                    {/* Edit/Delete buttons */}
+                    {isOwnProfile && (
+                      <div className="flex gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => onEdit(team)}
+                          className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                        >
+                          <Pencil className="w-3 h-3 text-slate-400 hover:text-lime-500" />
+                        </button>
+                        <button
+                          onClick={() => onDelete(team._id)}
+                          className="p-1.5 hover:bg-red-500/10 rounded-lg transition-colors"
+                        >
+                          <Trash2 className="w-3 h-3 text-slate-400 hover:text-red-500" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Details */}
+                  <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">
+                    {team.details}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-slate-500 text-sm px-4 py-8">No team history yet.</div>
+          )}
+
+          {/* Add Team Card - only show for own profile */}
+          {isOwnProfile && (
+            <div
+              onClick={onAdd}
+              className="relative min-w-[220px] max-w-[220px] flex-shrink-0 border-2 border-dashed border-white/10 rounded-2xl p-5 flex flex-col items-center justify-center text-slate-500 hover:border-lime-500/50 hover:text-lime-500 transition-all cursor-pointer group h-[140px]"
+            >
+              <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-2 group-hover:bg-lime-500/20 transition-colors">
+                <span className="text-2xl">+</span>
+              </div>
+              <span className="text-xs font-medium">Add Team</span>
+            </div>
+          )}
+        </div>
+
+        {/* Right Arrow */}
+        <button
+          onClick={scrollRight}
+          className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/90 backdrop-blur-md border border-lime-500/30 flex items-center justify-center text-white hover:bg-lime-500 hover:text-black transition-all opacity-0 group-hover:opacity-100 shadow-lg shadow-black/50"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+    </motion.div>
+  );
+};
+
+// --- Experience and Tournaments ---
+const ExperienceTournaments = ({ tournaments, isOwnProfile, onEdit, onAdd, onDelete }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.3 }}
+    className="bg-[#1b1f23] border border-white/5 rounded-2xl p-6 mb-6"
+  >
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center gap-2">
+        <Medal className="w-5 h-5 text-lime-500" />
+        <h3 className="font-bold text-lg text-white">Experience and Tournaments</h3>
+      </div>
+      {isOwnProfile && (
+        <button
+          onClick={onAdd}
+          className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+        >
+          <Pencil className="w-4 h-4 text-slate-400 hover:text-lime-500" />
+        </button>
+      )}
+    </div>
+
+    <div className="space-y-3">
+      {tournaments.length > 0 ? (
+        tournaments.map((tournament) => (
+          <div
+            key={tournament._id || tournament.id}
+            className="bg-white/5 border border-white/5 rounded-xl px-5 py-4 hover:bg-white/10 hover:border-lime-500/30 transition-all group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Trophy className="w-5 h-5 text-lime-500 opacity-60 group-hover:opacity-100 transition-opacity" />
+                <span className="font-medium text-slate-200">{tournament.name}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {tournament.placement && (
+                  <span className="text-xs text-lime-500 font-bold bg-lime-500/10 px-3 py-1 rounded-full">
+                    {tournament.placement}
+                  </span>
+                )}
+                {isOwnProfile && (
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={() => onEdit(tournament)}
+                      className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                      <Pencil className="w-3 h-3 text-slate-400 hover:text-lime-500" />
+                    </button>
+                    <button
+                      onClick={() => onDelete(tournament._id)}
+                      className="p-1.5 hover:bg-red-500/10 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-3 h-3 text-slate-400 hover:text-red-500" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))
+      ) : (
+        <div className="text-slate-500 text-sm px-4 py-4">No tournament experience yet.</div>
+      )}
+
+      {/* Add More Placeholder - only show for own profile */}
+      {isOwnProfile && (
+        <div
+          onClick={onAdd}
+          className="border-2 border-dashed border-white/10 rounded-xl px-5 py-4 flex items-center justify-center text-slate-500 hover:border-lime-500/50 hover:text-lime-500 transition-all cursor-pointer"
+        >
+          <span className="text-sm font-medium">+ Add Tournament</span>
+        </div>
+      )}
+    </div>
+  </motion.div>
+);
+
+// --- Setup & Config ---
+const SetupConfig = ({ setup, isOwnProfile, onEdit, onCopy, copiedField }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.35 }}
+    className="bg-[#1b1f23] border border-white/5 rounded-2xl p-6 mb-6"
+  >
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center gap-2">
+        <Monitor className="w-5 h-5 text-lime-500" />
+        <h3 className="font-bold text-lg text-white">Setup & Config</h3>
+      </div>
+      {isOwnProfile && (
+        <button
+          onClick={onEdit}
+          className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+        >
+          <Pencil className="w-4 h-4 text-slate-400 hover:text-lime-500" />
+        </button>
+      )}
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <div className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 group relative">
+        <div className="flex items-center gap-3">
+          <Target className="w-5 h-5 text-lime-500 opacity-60 group-hover:opacity-100 transition-opacity" />
+          <div className="flex-1">
+            <span className="font-medium text-slate-200 block">DPI + Game sens</span>
+            <span className="text-xs text-slate-500">{setup?.dpi || 800} DPI • {setup?.sensitivity || 0.35} sens</span>
+          </div>
+          <button
+            onClick={() => onCopy(`${setup?.dpi || 800} DPI, ${setup?.sensitivity || 0.35} sens`, 'dpi')}
+            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+          >
+            {copiedField === 'dpi' ? (
+              <Check className="w-4 h-4 text-lime-500" />
+            ) : (
+              <Copy className="w-4 h-4 text-slate-400 hover:text-lime-500" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 group relative">
+        <div className="flex items-center gap-3">
+          <Monitor className="w-5 h-5 text-lime-500 opacity-60 group-hover:opacity-100 transition-opacity" />
+          <div className="flex-1">
+            <span className="font-medium text-slate-200 block">Aspect ratio</span>
+            <span className="text-xs text-slate-500">{setup?.aspectRatio || '16:9'} • {setup?.resolution || '1920x1080'}</span>
+          </div>
+          <button
+            onClick={() => onCopy(`${setup?.aspectRatio || '16:9'}, ${setup?.resolution || '1920x1080'}`, 'aspect')}
+            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+          >
+            {copiedField === 'aspect' ? (
+              <Check className="w-4 h-4 text-lime-500" />
+            ) : (
+              <Copy className="w-4 h-4 text-slate-400 hover:text-lime-500" />
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div className="bg-white/5 border border-white/10 rounded-xl px-5 py-4 group mb-6">
+      <div className="flex items-center gap-3">
+        <Mouse className="w-5 h-5 text-lime-500 opacity-60 group-hover:opacity-100 transition-opacity" />
+        <div className="flex-1 min-w-0">
+          <span className="font-medium text-slate-200 block">Preferred Mouse and crosshair code</span>
+          <span className="text-xs text-slate-500 truncate block">
+            {setup?.mouse || 'Not set'} {setup?.crosshairCode ? `• ${setup.crosshairCode}` : ''}
+          </span>
+        </div>
+        <button
+          onClick={() => onCopy(setup?.crosshairCode || '', 'crosshair')}
+          className="p-1.5 hover:bg-white/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
+        >
+          {copiedField === 'crosshair' ? (
+            <Check className="w-4 h-4 text-lime-500" />
+          ) : (
+            <Copy className="w-4 h-4 text-slate-400 hover:text-lime-500" />
+          )}
+        </button>
+      </div>
+    </div>
+
+    {/* Download as PDF */}
+    <div className="flex justify-end">
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className="px-6 py-3 bg-gradient-to-r from-lime-500 to-green-500 text-black rounded-xl font-bold hover:shadow-lg hover:shadow-lime-500/30 transition-all flex items-center gap-2"
+      >
+        <Download className="w-4 h-4" />
+        Download as PDF
+      </motion.button>
+    </div>
+  </motion.div>
+);
+
+// --- Edit Modal Base Component ---
+const EditModal = ({ open, onClose, title, children }) => (
+  <AnimatePresence>
+    {open && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] flex items-center justify-center"
+        onClick={onClose}
+      >
+        {/* Blur Backdrop */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-md" />
+
+        {/* Modal Content */}
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="relative z-10 bg-[#1b1f23] border border-white/10 rounded-2xl p-6 shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-white">{title}</h2>
+            <IconButton onClick={onClose} className="text-slate-400 hover:text-white">
+              <X className="w-5 h-5" />
+            </IconButton>
+          </div>
+          {children}
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+// --- Team Edit Modal ---
+const TeamEditModal = ({ open, onClose, onSave, editingTeam }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    logo: '',
+    details: '',
+  });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (editingTeam) {
+      setFormData({
+        name: editingTeam.name || '',
+        logo: editingTeam.logo || '',
+        details: editingTeam.details || '',
+      });
+    } else {
+      setFormData({ name: '', logo: '', details: '' });
+    }
+  }, [editingTeam, open]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name.trim()) return;
+
+    setSaving(true);
+    try {
+      await onSave(formData, editingTeam?._id);
+      onClose();
+    } catch (err) {
+      console.error('Failed to save team:', err);
+    }
+    setSaving(false);
+  };
+
+  return (
+    <EditModal open={open} onClose={onClose} title={editingTeam ? "Edit Team" : "Add Team"}>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-slate-400 mb-2">Team Name *</label>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+            placeholder="Enter team name"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-400 mb-2">Logo URL</label>
+          <input
+            type="text"
+            value={formData.logo}
+            onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+            placeholder="https://example.com/logo.png"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-400 mb-2">Details / Experience</label>
+          <textarea
+            value={formData.details}
+            onChange={(e) => setFormData({ ...formData, details: e.target.value })}
+            rows={3}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50 resize-none"
+            placeholder="Describe your role and experience with this team..."
+          />
+        </div>
+
+        <div className="flex gap-3 justify-end pt-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={saving || !formData.name.trim()}
+            className="px-5 py-2.5 bg-gradient-to-r from-lime-500 to-green-500 text-black rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-lime-500/30 transition-all"
+          >
+            {saving ? 'Saving...' : (editingTeam ? 'Update' : 'Add Team')}
+          </button>
+        </div>
+      </form>
+    </EditModal>
+  );
+};
+
+// --- Tournament Edit Modal ---
+const TournamentEditModal = ({ open, onClose, onSave, editingTournament }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    placement: '',
+  });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (editingTournament) {
+      setFormData({
+        name: editingTournament.name || '',
+        placement: editingTournament.placement || '',
+      });
+    } else {
+      setFormData({ name: '', placement: '' });
+    }
+  }, [editingTournament, open]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name.trim()) return;
+
+    setSaving(true);
+    try {
+      await onSave(formData, editingTournament?._id);
+      onClose();
+    } catch (err) {
+      console.error('Failed to save tournament:', err);
+    }
+    setSaving(false);
+  };
+
+  return (
+    <EditModal open={open} onClose={onClose} title={editingTournament ? "Edit Tournament" : "Add Tournament"}>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-slate-400 mb-2">Tournament Name *</label>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+            placeholder="Enter tournament name"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-400 mb-2">Placement / Result</label>
+          <input
+            type="text"
+            value={formData.placement}
+            onChange={(e) => setFormData({ ...formData, placement: e.target.value })}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+            placeholder="e.g., 1st Place, Top 8, etc."
+          />
+        </div>
+
+        <div className="flex gap-3 justify-end pt-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={saving || !formData.name.trim()}
+            className="px-5 py-2.5 bg-gradient-to-r from-lime-500 to-green-500 text-black rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-lime-500/30 transition-all"
+          >
+            {saving ? 'Saving...' : (editingTournament ? 'Update' : 'Add Tournament')}
+          </button>
+        </div>
+      </form>
+    </EditModal>
+  );
+};
+
+// --- Setup Edit Modal ---
+const SetupEditModal = ({ open, onClose, onSave, currentSetup }) => {
+  const [formData, setFormData] = useState({
+    dpi: 800,
+    sensitivity: 0.35,
+    aspectRatio: '16:9',
+    resolution: '1920x1080',
+    mouse: '',
+    crosshairCode: '',
+  });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (currentSetup) {
+      setFormData({
+        dpi: currentSetup.dpi || 800,
+        sensitivity: currentSetup.sensitivity || 0.35,
+        aspectRatio: currentSetup.aspectRatio || '16:9',
+        resolution: currentSetup.resolution || '1920x1080',
+        mouse: currentSetup.mouse || '',
+        crosshairCode: currentSetup.crosshairCode || '',
+      });
+    }
+  }, [currentSetup, open]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await onSave(formData);
+      onClose();
+    } catch (err) {
+      console.error('Failed to save setup:', err);
+    }
+    setSaving(false);
+  };
+
+  return (
+    <EditModal open={open} onClose={onClose} title="Edit Gaming Setup">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-400 mb-2">DPI</label>
+            <input
+              type="number"
+              value={formData.dpi}
+              onChange={(e) => setFormData({ ...formData, dpi: Number(e.target.value) })}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+              placeholder="800"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-400 mb-2">Sensitivity</label>
+            <input
+              type="number"
+              step="0.01"
+              value={formData.sensitivity}
+              onChange={(e) => setFormData({ ...formData, sensitivity: Number(e.target.value) })}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+              placeholder="0.35"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-400 mb-2">Aspect Ratio</label>
+            <input
+              type="text"
+              value={formData.aspectRatio}
+              onChange={(e) => setFormData({ ...formData, aspectRatio: e.target.value })}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+              placeholder="16:9"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-400 mb-2">Resolution</label>
+            <input
+              type="text"
+              value={formData.resolution}
+              onChange={(e) => setFormData({ ...formData, resolution: e.target.value })}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+              placeholder="1920x1080"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-400 mb-2">Mouse</label>
+          <input
+            type="text"
+            value={formData.mouse}
+            onChange={(e) => setFormData({ ...formData, mouse: e.target.value })}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+            placeholder="e.g., Logitech G Pro X Superlight"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-400 mb-2">Crosshair Code</label>
+          <input
+            type="text"
+            value={formData.crosshairCode}
+            onChange={(e) => setFormData({ ...formData, crosshairCode: e.target.value })}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-lime-500/50"
+            placeholder="0;P;c;5;h;0;m;1;0l;4;0o;2;0a;1;0f;0;1b;0"
+          />
+        </div>
+
+        <div className="flex gap-3 justify-end pt-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={saving}
+            className="px-5 py-2.5 bg-gradient-to-r from-lime-500 to-green-500 text-black rounded-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-lime-500/30 transition-all"
+          >
+            {saving ? 'Saving...' : 'Save Setup'}
+          </button>
+        </div>
+      </form>
+    </EditModal>
+  );
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { username: viewedUsername } = useParams();
@@ -941,6 +1641,28 @@ const Dashboard = () => {
   const [profileLoading, setProfileLoading] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
+
+  // Profile data state
+  const [teams, setTeams] = useState([]);
+  const [tournaments, setTournaments] = useState([]);
+  const [gamingSetup, setGamingSetup] = useState({
+    dpi: 800,
+    sensitivity: 0.35,
+    aspectRatio: '16:9',
+    resolution: '1920x1080',
+    mouse: '',
+    crosshairCode: ''
+  });
+
+  // Modal state
+  const [showTeamModal, setShowTeamModal] = useState(false);
+  const [showTournamentModal, setShowTournamentModal] = useState(false);
+  const [showSetupModal, setShowSetupModal] = useState(false);
+  const [editingTeam, setEditingTeam] = useState(null);
+  const [editingTournament, setEditingTournament] = useState(null);
+
+  // Copy feedback state
+  const [copiedField, setCopiedField] = useState(null);
 
   // Determine if viewing own profile or another user's
   const isOwnProfile = !viewedUsername || viewedUsername === user?.username;
@@ -1011,6 +1733,106 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Connection request failed", error);
     }
+  };
+
+  // Fetch profile data (teams, tournaments, setup)
+  const fetchProfileData = async () => {
+    try {
+      const username = isOwnProfile ? null : viewedUsername;
+      const res = username
+        ? await profileService.getDataByUsername(username)
+        : await profileService.getData();
+
+      if (res.data) {
+        setTeams(res.data.teamHistory || []);
+        setTournaments(res.data.tournamentExperience || []);
+        setGamingSetup(res.data.gamingSetup || {
+          dpi: 800,
+          sensitivity: 0.35,
+          aspectRatio: '16:9',
+          resolution: '1920x1080',
+          mouse: '',
+          crosshairCode: ''
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch profile data", error);
+    }
+  };
+
+  React.useEffect(() => {
+    if (user || viewedUsername) {
+      fetchProfileData();
+    }
+  }, [user, viewedUsername, isOwnProfile]);
+
+  // Team handlers
+  const handleSaveTeam = async (formData, teamId) => {
+    try {
+      if (teamId) {
+        const res = await profileService.updateTeam(teamId, formData);
+        setTeams(res.data);
+      } else {
+        const res = await profileService.addTeam(formData);
+        setTeams(res.data);
+      }
+    } catch (error) {
+      console.error("Failed to save team", error);
+      throw error;
+    }
+  };
+
+  const handleDeleteTeam = async (teamId) => {
+    try {
+      const res = await profileService.deleteTeam(teamId);
+      setTeams(res.data);
+    } catch (error) {
+      console.error("Failed to delete team", error);
+    }
+  };
+
+  // Tournament handlers
+  const handleSaveTournament = async (formData, tournamentId) => {
+    try {
+      if (tournamentId) {
+        const res = await profileService.updateTournament(tournamentId, formData);
+        setTournaments(res.data);
+      } else {
+        const res = await profileService.addTournament(formData);
+        setTournaments(res.data);
+      }
+    } catch (error) {
+      console.error("Failed to save tournament", error);
+      throw error;
+    }
+  };
+
+  const handleDeleteTournament = async (tournamentId) => {
+    try {
+      const res = await profileService.deleteTournament(tournamentId);
+      setTournaments(res.data);
+    } catch (error) {
+      console.error("Failed to delete tournament", error);
+    }
+  };
+
+  // Setup handler
+  const handleSaveSetup = async (formData) => {
+    try {
+      const res = await profileService.updateSetup(formData);
+      setGamingSetup(res.data);
+    } catch (error) {
+      console.error("Failed to save setup", error);
+      throw error;
+    }
+  };
+
+  // Copy to clipboard handler
+  const handleCopy = (text, field) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    });
   };
 
   // Open chat from notification
@@ -1413,6 +2235,53 @@ const Dashboard = () => {
           }}
           recipient={chatRecipient || viewedUser}
           currentUser={user}
+        />
+
+        {/* --- Team History Timeline --- */}
+        <TeamHistoryTimeline
+          teams={teams}
+          isOwnProfile={isOwnProfile}
+          onEdit={(team) => { setEditingTeam(team); setShowTeamModal(true); }}
+          onAdd={() => { setEditingTeam(null); setShowTeamModal(true); }}
+          onDelete={handleDeleteTeam}
+        />
+
+        {/* --- Experience and Tournaments --- */}
+        <ExperienceTournaments
+          tournaments={tournaments}
+          isOwnProfile={isOwnProfile}
+          onEdit={(tournament) => { setEditingTournament(tournament); setShowTournamentModal(true); }}
+          onAdd={() => { setEditingTournament(null); setShowTournamentModal(true); }}
+          onDelete={handleDeleteTournament}
+        />
+
+        {/* --- Setup & Config --- */}
+        <SetupConfig
+          setup={gamingSetup}
+          isOwnProfile={isOwnProfile}
+          onEdit={() => setShowSetupModal(true)}
+          onCopy={handleCopy}
+          copiedField={copiedField}
+        />
+
+        {/* Edit Modals */}
+        <TeamEditModal
+          open={showTeamModal}
+          onClose={() => { setShowTeamModal(false); setEditingTeam(null); }}
+          onSave={handleSaveTeam}
+          editingTeam={editingTeam}
+        />
+        <TournamentEditModal
+          open={showTournamentModal}
+          onClose={() => { setShowTournamentModal(false); setEditingTournament(null); }}
+          onSave={handleSaveTournament}
+          editingTournament={editingTournament}
+        />
+        <SetupEditModal
+          open={showSetupModal}
+          onClose={() => setShowSetupModal(false)}
+          onSave={handleSaveSetup}
+          currentSetup={gamingSetup}
         />
 
         {/* --- Posts Section --- */}
