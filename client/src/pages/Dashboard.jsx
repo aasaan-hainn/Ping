@@ -93,6 +93,39 @@ const TikTokIcon = ({ className }) => (
   </svg>
 );
 
+const SteamIcon = ({ className }) => (
+  <svg
+    className={className}
+    fill="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M11.979 2.5a9.49 9.49 0 0 0-3.328.618l-3.21-1.353A9.43 9.43 0 0 0 1.517 7.02l3.473 5.068a3.29 3.29 0 0 0-.25 1.252 3.32 3.32 0 0 0 3.315 3.315 3.31 3.31 0 0 0 3.314-3.315 3.31 3.31 0 0 0-1.638-2.85l3.823-5.58a9.48 9.48 0 0 0 7.925 7.152 9.49 9.49 0 1 0-9.498-9.562Zm-3.29 11.87a2.37 2.37 0 1 1 2.368-2.37 2.37 2.37 0 0 1-2.369 2.37Z" />
+  </svg>
+);
+
+const PlayStationIcon = ({ className }) => (
+  <svg
+    className={className}
+    fill="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M23.665 10.966c-.146-.612-1.393-1.096-3.08-1.096-1.575 0-2.815.426-3.067.994-.038.083-.058.172-.058.267v5.52l-2.073 1.396-6.666-3.79V5.012c0-.528-.31-1.002-.786-1.205L2.14.072A.92.92 0 0 0 .916 1.34l5.314 3.42v9.84l-4.66-2.618a1.59 1.59 0 0 0-2.187.56 1.585 1.585 0 0 0 .562 2.18l6.096 3.426c.068.037.136.075.207.106.67.31 1.458.337 2.17.07l7.85-4.407v-1.78l-1.32.883v.85c0 .736 1.408 1.332 3.147 1.332 1.737 0 3.146-.596 3.146-1.333v-1.59c0-.498-.64-.93-1.643-1.16a7.28 7.28 0 0 0-1.338-.135c-.965 0-1.75.213-1.928.52-.02.036-.03.076-.03.118v.573l5.58 3.14a.65.65 0 0 0 .895-.23.65.65 0 0 0-.23-.893l-3.266-1.834v-.55c0-.18.066-.35.195-.486.27-.282.845-.456 1.54-.456.97 0 1.62.33 1.62.665v1.28c0 .034-.03.06-.063.06-.033 0-.06-.027-.06-.06v-1.28c0-.02-.023-.03-.046-.03-.024 0-.046.01-.046.03v1.59c0 .02.022.03.046.03.023 0 .046-.01.046-.03v-.85l2.067-1.39v-.058c0-.064-.02-.128-.057-.184Z" />
+  </svg>
+);
+
+const XboxIcon = ({ className }) => (
+  <svg
+    className={className}
+    fill="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12.001 2.002c-5.522 0-9.999 4.477-9.999 9.999 0 5.52 4.477 9.999 9.999 9.999 5.52 0 9.999-4.478 9.999-9.999 0-5.522-4.478-9.999-9.999-9.999Zm5.947 15.653c-1.39-1.36-2.58-2.61-4.22-4.19.46-.38.9-.76 1.34-1.13 1.05-.89 2.1-1.78 3.14-2.69.24-.22.44-.55.51-.87.16-.76-.32-1.46-1.07-1.55-.44-.06-.79.09-1.13.37-1.46 1.25-2.93 2.5-4.39 3.75-.12.1-.23.23-.42.42-.2-.2-.33-.31-.44-.41-1.47-1.25-2.93-2.5-4.4-3.75-.34-.28-.69-.43-1.13-.37-.75.09-1.23.79-1.07 1.55.07.32.27.65.51.87 1.04.91 2.09 1.8 3.14 2.69.44.37.88.75 1.34 1.13-1.64 1.58-2.83 2.83-4.22 4.19-.58.58-.58 1.48.02 2.05.59.57 1.5.55 2.06-.02 1.25-1.27 2.45-2.59 3.69-3.9 1.25 1.32 2.46 2.65 3.72 3.92.56.56 1.47.58 2.06.01.59-.57.59-1.47.01-2.05-.01-.01-.03-.02-.04-.03Z" />
+  </svg>
+);
+
 // --- Game Logo Helper ---
 const GameLogo = ({ gameName, supportedGames, className }) => {
   const game = supportedGames.find(
@@ -178,6 +211,36 @@ const SocialsDisplay = ({ socials, isOwnProfile, onEdit }) => {
       border: "border-indigo-400/20",
       hover: "hover:bg-indigo-400/20",
       label: "Discord",
+      isCopy: true,
+    },
+    {
+      key: "steam",
+      icon: SteamIcon,
+      color: "text-sky-300",
+      bg: "bg-sky-300/10",
+      border: "border-sky-300/20",
+      hover: "hover:bg-sky-300/20",
+      label: "Steam",
+      urlPrefix: "https://steamcommunity.com/id/",
+    },
+    {
+      key: "psn",
+      icon: PlayStationIcon,
+      color: "text-blue-500",
+      bg: "bg-blue-500/10",
+      border: "border-blue-500/20",
+      hover: "hover:bg-blue-500/20",
+      label: "PSN",
+      isCopy: true,
+    },
+    {
+      key: "xbox",
+      icon: XboxIcon,
+      color: "text-green-500",
+      bg: "bg-green-500/10",
+      border: "border-green-500/20",
+      hover: "hover:bg-green-500/20",
+      label: "Xbox",
       isCopy: true,
     },
   ];
@@ -495,6 +558,9 @@ const SocialsEditModal = ({ open, onClose, onSave, currentSocials }) => {
     youtube: "",
     tiktok: "",
     discord: "",
+    steam: "",
+    psn: "",
+    xbox: "",
   });
   const [saving, setSaving] = useState(false);
 
@@ -507,6 +573,9 @@ const SocialsEditModal = ({ open, onClose, onSave, currentSocials }) => {
         youtube: currentSocials.youtube || "",
         tiktok: currentSocials.tiktok || "",
         discord: currentSocials.discord || "",
+        steam: currentSocials.steam || "",
+        psn: currentSocials.psn || "",
+        xbox: currentSocials.xbox || "",
       });
     }
   }, [currentSocials, open]);
@@ -559,6 +628,24 @@ const SocialsEditModal = ({ open, onClose, onSave, currentSocials }) => {
       label: "Discord Username",
       icon: DiscordIcon,
       placeholder: "username#0000",
+    },
+    {
+      key: "steam",
+      label: "Steam ID (Custom URL)",
+      icon: SteamIcon,
+      placeholder: "username",
+    },
+    {
+      key: "psn",
+      label: "PSN Online ID",
+      icon: PlayStationIcon,
+      placeholder: "Online ID",
+    },
+    {
+      key: "xbox",
+      label: "Xbox Gamertag",
+      icon: XboxIcon,
+      placeholder: "Gamertag",
     },
   ];
 
