@@ -267,6 +267,7 @@ const GameEditModal = ({
     "Racing Games (Sim Racing)",
     "Digital Card Games (CCG/TCG)",
     "Auto-Battlers (Auto Chess)",
+    "Survival Multiplayer",
   ];
 
   useEffect(() => {
