@@ -2,12 +2,14 @@ import nodemailer from 'nodemailer';
 
 export const sendEmail = async ({ email, subject, html }) => {
     try {
+        const port = parseInt(process.env.SMTP_PORT || '587');
+        const secure = port === 465;
+
         // Create a transporter using environment variables
-        // Default to Gmail settings if not specified
         const transporter = nodemailer.createTransport({
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: process.env.SMTP_PORT || 587,
-            secure: false, // true for 465, false for other ports
+            port: port,
+            secure: secure, // true for 465, false for other ports
             auth: {
                 user: process.env.SMTP_EMAIL,
                 pass: process.env.SMTP_PASSWORD,
