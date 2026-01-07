@@ -10,6 +10,9 @@ export const sendEmail = async ({ email, subject, html }) => {
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
             port: port,
             secure: secure, // true for 465, false for other ports
+            connectionTimeout: 10000, // 10 seconds
+            greetingTimeout: 10000, // 10 seconds
+            socketTimeout: 10000, // 10 seconds
             auth: {
                 user: process.env.SMTP_EMAIL,
                 pass: process.env.SMTP_PASSWORD,
@@ -30,6 +33,13 @@ export const sendEmail = async ({ email, subject, html }) => {
         // PRODUCTION: Always throw the error and DO NOT log the OTP
         if (process.env.NODE_ENV === 'production') {
             console.error('Email send failed:', error.message);
+            console.error('Error code:', error.code);
+            console.error('SMTP Configuration Check:', {
+                host: process.env.SMTP_HOST || 'NOT SET',
+                port: process.env.SMTP_PORT || 'NOT SET',
+                email: process.env.SMTP_EMAIL ? '✓ Configured' : '✗ MISSING',
+                password: process.env.SMTP_PASSWORD ? '✓ Configured' : '✗ MISSING',
+            });
             throw new Error('Failed to send verification email. Please try again later.');
         }
 
@@ -42,13 +52,13 @@ export const sendEmail = async ({ email, subject, html }) => {
         // Extract OTP from HTML if possible for easier reading
         const otpMatch = html.match(/>(\d{6})</);
         if (otpMatch) {
-             console.log(`>>> OTP CODE: ${otpMatch[1]} <<<`);
+            console.log(`>>> OTP CODE: ${otpMatch[1]} <<<`);
         }
         console.log('----------------------------------------------------------------');
         console.log('Full HTML Content:', html);
         console.log('================================================================\n');
         console.error('Nodemailer Error:', error.message);
-        
+
         return { id: 'mock-email-id', success: true };
     }
 };

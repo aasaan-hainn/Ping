@@ -36,12 +36,22 @@ export const AuthProvider = ({ children }) => {
     }, [token])
 
     const login = async (email, password) => {
-        const response = await authService.login({ email, password })
-        const { token: newToken, user: userData } = response.data
-        localStorage.setItem('token', newToken)
-        setToken(newToken)
-        setUser(userData)
-        return userData
+        try {
+            const response = await authService.login({ email, password })
+            const { token: newToken, user: userData } = response.data
+            localStorage.setItem('token', newToken)
+            setToken(newToken)
+            setUser(userData)
+            return userData
+        } catch (error) {
+            // Preserve the original error with response object for AuthPage to detect
+            if (error.response?.data?.isVerified === false) {
+                // Add custom properties but keep response intact
+                error.isVerified = false
+                error.email = error.response.data.email
+            }
+            throw error
+        }
     }
 
     const register = async (username, email, password) => {

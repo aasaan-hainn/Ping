@@ -68,6 +68,7 @@ router.post(
             })
 
             // Send OTP email
+            let emailSent = false;
             try {
                 await sendEmail({
                     email: user.email,
@@ -79,15 +80,30 @@ router.post(
                         <p>This code will expire in 10 minutes.</p>
                     `
                 })
+                emailSent = true;
             } catch (emailError) {
-                // If email fails, we should probably delete the user or allow resend
-                // For now, we'll log it and the user can request resend
                 console.error('Failed to send verification email:', emailError)
+
+                // In development, auto-verify to avoid blocking developers
+                if (process.env.NODE_ENV === 'development') {
+                    console.log('🔓 Development Mode: Auto-verifying user due to email failure');
+                    user.isVerified = true;
+                    user.otp = undefined;
+                    user.otpExpires = undefined;
+                    await user.save();
+                }
+                // In production, user can still verify via resend OTP
             }
 
             res.status(201).json({
-                message: 'Registration successful. Please verify your email.',
-                email: user.email
+                message: emailSent
+                    ? 'Registration successful. Please check your email for verification code.'
+                    : (process.env.NODE_ENV === 'development'
+                        ? 'Registration successful. Email service unavailable - account auto-verified for development.'
+                        : 'Registration successful. Email service temporarily unavailable. Please use "Resend OTP" to verify.'),
+                email: user.email,
+                emailSent,
+                autoVerified: !emailSent && process.env.NODE_ENV === 'development'
             })
         } catch (error) {
             console.error('Register error:', error)
@@ -122,12 +138,24 @@ router.post(
                 return res.status(401).json({ message: 'Invalid email or password' })
             }
 
+            // Handle unverified users
             if (!user.isVerified) {
-                return res.status(401).json({ 
-                    message: 'Email not verified',
-                    isVerified: false,
-                    email: user.email 
-                })
+                // Check if this is a legacy user (registered before email verification)
+                // Legacy users won't have OTP fields set
+                if (!user.otp && !user.otpExpires) {
+                    // Auto-verify legacy user
+                    console.log(`Auto-verifying legacy user: ${user.email}`)
+                    user.isVerified = true
+                    await user.save()
+                } else {
+                    // New user needs to verify email
+                    return res.status(401).json({
+                        message: 'Email not verified. Please check your email for the verification code.',
+                        isVerified: false,
+                        email: user.email,
+                        needsVerification: true
+                    })
+                }
             }
 
             // Update status to online
@@ -306,7 +334,7 @@ router.post('/forgotpassword', async (req, res) => {
         // Create reset url
         // In production, this would be the frontend URL
         const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/resetpassword/${resetToken}`
-        
+
         // For development, we'll log it. In production, send via email
         console.log(`Password Reset URL: ${resetUrl}`)
 

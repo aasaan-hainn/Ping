@@ -93,9 +93,9 @@ const AuthPage = () => {
                 transition={{ duration: 0.2 }}
                 className="p-8 w-full"
               >
-                <VerifyForm 
-                    email={verificationEmail} 
-                    onBack={() => setVerificationEmail(null)}
+                <VerifyForm
+                  email={verificationEmail}
+                  onBack={() => setVerificationEmail(null)}
                 />
               </motion.div>
             ) : isLogin ? (
@@ -149,13 +149,13 @@ const LoginForm = ({ onNeedVerification }) => {
       navigate("/dashboard");
     } catch (err) {
       const msg = err.response?.data?.message || "Login failed.";
-      
+
       // Check if the error indicates unverified email
       if (err.response?.status === 401 && err.response?.data?.isVerified === false) {
-         onNeedVerification(err.response.data.email || formData.email);
-         return;
+        onNeedVerification(err.response.data.email || formData.email);
+        return;
       }
-      
+
       setError(msg);
     } finally {
       setLoading(false);
@@ -218,7 +218,8 @@ const LoginForm = ({ onNeedVerification }) => {
 };
 
 const RegisterForm = ({ onSuccess }) => {
-  const { register } = useAuth();
+  const navigate = useNavigate();
+  const { register, login } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -248,9 +249,16 @@ const RegisterForm = ({ onSuccess }) => {
       return;
     }
     try {
-      await register(formData.username, formData.email, formData.password);
-      // On success, switch to verification
-      onSuccess(formData.email);
+      const response = await register(formData.username, formData.email, formData.password);
+
+      // If auto-verified in development, login and redirect
+      if (response.autoVerified) {
+        await login(formData.email, formData.password);
+        navigate("/dashboard");
+      } else {
+        // Otherwise, show verification form
+        onSuccess(formData.email);
+      }
     } catch (err) {
       setError(
         err.response?.data?.message || "Registration failed. Please try again.",
@@ -394,13 +402,13 @@ const VerifyForm = ({ email, onBack }) => {
     <>
       <div className="text-center mb-8">
         <div className="mx-auto w-16 h-16 bg-lime-500/10 rounded-full flex items-center justify-center mb-4">
-            <Mail className="w-8 h-8 text-lime-400" />
+          <Mail className="w-8 h-8 text-lime-400" />
         </div>
         <h2 className="text-2xl font-bold text-white mb-2">
-            Verify Your Email
+          Verify Your Email
         </h2>
         <p className="text-gray-400 text-sm">
-            We sent a 6-digit code to <span className="text-lime-400">{email}</span>
+          We sent a 6-digit code to <span className="text-lime-400">{email}</span>
         </p>
       </div>
 
@@ -439,23 +447,23 @@ const VerifyForm = ({ email, onBack }) => {
         </button>
 
         <div className="flex flex-col items-center space-y-4 mt-6">
-            <button 
-                type="button"
-                onClick={handleResend}
-                disabled={resendCooldown > 0}
-                className={`text-sm flex items-center space-x-2 ${resendCooldown > 0 ? 'text-gray-600 cursor-not-allowed' : 'text-lime-400 hover:text-lime-300'}`}
-            >
-                <RefreshCw className={`w-4 h-4 ${resendCooldown === 0 ? 'group-hover:rotate-180 transition-transform' : ''}`} />
-                <span>{resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : "Resend Code"}</span>
-            </button>
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resendCooldown > 0}
+            className={`text-sm flex items-center space-x-2 ${resendCooldown > 0 ? 'text-gray-600 cursor-not-allowed' : 'text-lime-400 hover:text-lime-300'}`}
+          >
+            <RefreshCw className={`w-4 h-4 ${resendCooldown === 0 ? 'group-hover:rotate-180 transition-transform' : ''}`} />
+            <span>{resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : "Resend Code"}</span>
+          </button>
 
-            <button 
-                type="button"
-                onClick={onBack}
-                className="text-gray-500 text-sm hover:text-white transition-colors"
-            >
-                Back to Login
-            </button>
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-gray-500 text-sm hover:text-white transition-colors"
+          >
+            Back to Login
+          </button>
         </div>
       </form>
     </>
