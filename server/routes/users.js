@@ -1,6 +1,7 @@
 import express from 'express'
 import { body } from 'express-validator'
 import User from '../models/User.js'
+import Connection from '../models/Connection.js'
 import { protect } from '../middleware/auth.js'
 import { validate } from '../middleware/validator.js'
 
@@ -18,6 +19,65 @@ const userResponse = (user) => ({
     gamingAccounts: user.gamingAccounts,
     status: user.status,
     lastSeen: user.lastSeen,
+})
+
+// @route   GET /api/users/explore
+// @desc    Get all users with connection status
+// @access  Private
+router.get('/explore', protect, async (req, res) => {
+    try {
+        const currentUserId = req.user._id
+
+        // 1. Get all users except current user
+        const allUsers = await User.find({ _id: { $ne: currentUserId } })
+            .select('username avatar bio status')
+            .lean()
+
+        // 2. Get all connections involving current user
+        const connections = await Connection.find({
+            $or: [{ requester: currentUserId }, { recipient: currentUserId }]
+        }).lean()
+
+        // 3. Create a map for quick lookup
+        const connectionMap = new Map()
+        connections.forEach(conn => {
+            const otherId = conn.requester.toString() === currentUserId.toString() 
+                ? conn.recipient.toString() 
+                : conn.requester.toString()
+            
+            let status = 'none'
+            if (conn.status === 'accepted') {
+                status = 'connected'
+            } else if (conn.status === 'pending') {
+                status = conn.requester.toString() === currentUserId.toString() 
+                    ? 'pending_sent' 
+                    : 'pending_received'
+            }
+            connectionMap.set(otherId, status)
+        })
+
+        // 4. Attach status to users
+        const usersWithStatus = allUsers.map(user => ({
+            ...user,
+            connectionStatus: connectionMap.get(user._id.toString()) || 'none'
+        }))
+
+        // 5. Sort: Connected first, then pending, then none
+        usersWithStatus.sort((a, b) => {
+            const score = (status) => {
+                if (status === 'connected') return 3
+                if (status === 'pending_received') return 2
+                if (status === 'pending_sent') return 1
+                return 0
+            }
+            return score(b.connectionStatus) - score(a.connectionStatus)
+        })
+
+        res.json(usersWithStatus)
+    } catch (error) {
+        console.error('Explore users error:', error)
+        res.status(500).json({ message: 'Server error' })
+    }
 })
 
 // @route   GET /api/users/:username

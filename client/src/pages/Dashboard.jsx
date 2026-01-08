@@ -43,6 +43,7 @@ import {
   ChevronUp,
   ChevronDown,
   Loader2,
+  Clock,
 } from "lucide-react";
 import {
   Avatar,
@@ -2689,6 +2690,178 @@ const SetupEditModal = ({ open, onClose, onSave, currentSetup }) => {
   );
 };
 
+// --- Connections Modal ---
+const ConnectionsModal = ({ open, onClose, onMessage, onConnect, currentUser }) => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    if (open) {
+      fetchUsers();
+    }
+  }, [open]);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await userService.getExploreUsers();
+      setUsers(res.data);
+    } catch (error) {
+      console.error("Failed to fetch explore users", error);
+    }
+    setLoading(false);
+  };
+
+  const handleConnect = async (userId) => {
+    try {
+      await connectionService.sendRequest(userId);
+      setUsers((prev) =>
+        prev.map((u) =>
+          u._id === userId ? { ...u, connectionStatus: "pending_sent" } : u,
+        ),
+      );
+      if (onConnect) onConnect(userId);
+    } catch (error) {
+      console.error("Connection request failed", error);
+    }
+  };
+
+  const filteredUsers = users.filter((u) =>
+    u.username.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      slotProps={{
+        backdrop: {
+          sx: {
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            backdropFilter: "blur(8px)",
+          },
+        },
+      }}
+    >
+      <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-[#1b1f23] border border-white/10 rounded-2xl p-6 shadow-2xl outline-none max-h-[80vh] flex flex-col">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+            <Users className="w-6 h-6 text-lime-500" />
+            All Players
+          </h2>
+          <IconButton
+            onClick={onClose}
+            className="text-slate-400 hover:text-white"
+          >
+            <X />
+          </IconButton>
+        </div>
+
+        <div className="bg-white/5 rounded-xl px-4 py-3 border border-white/10 mb-6 flex items-center">
+          <Search className="w-5 h-5 text-slate-400 mr-3" />
+          <InputBase
+            placeholder="Search players..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full text-slate-200"
+            sx={{ color: "inherit" }}
+          />
+        </div>
+
+        <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-3">
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <Loader2 className="w-8 h-8 text-lime-500 animate-spin" />
+            </div>
+          ) : filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
+              <div
+                key={user._id}
+                className="flex items-center justify-between p-4 bg-white/5 border border-white/5 hover:border-lime-500/30 rounded-xl transition-all group"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <Avatar
+                      src={user.avatar}
+                      className="w-12 h-12 border border-lime-500/30"
+                    >
+                      {user.username?.[0]}
+                    </Avatar>
+                    <div
+                      className={`absolute bottom-0 right-0 w-3 h-3 ${user.status === "online" ? "bg-green-500" : "bg-slate-600"} rounded-full border-2 border-[#1b1f23]`}
+                    />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-200 text-lg flex items-center gap-2">
+                      {user.username}
+                      {user.connectionStatus === "connected" && (
+                        <span className="text-[10px] bg-lime-500/20 text-lime-500 px-2 py-0.5 rounded-full border border-lime-500/30">
+                          Connected
+                        </span>
+                      )}
+                    </h4>
+                    <p className="text-sm text-slate-400 max-w-[250px] truncate">
+                      {user.bio || "No bio available"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Link
+                    to={`/dashboard/${user.username}`}
+                    onClick={onClose}
+                    className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+                  >
+                    <Users className="w-5 h-5" />
+                  </Link>
+
+                  {user.connectionStatus === "connected" ? (
+                    <button
+                      onClick={() => {
+                        onMessage(user);
+                        onClose();
+                      }}
+                      className="px-4 py-2 bg-white/10 text-white rounded-lg font-bold hover:bg-white/20 transition-all flex items-center gap-2"
+                    >
+                      <MessageSquare className="w-4 h-4" /> Message
+                    </button>
+                  ) : user.connectionStatus === "pending_sent" ? (
+                    <button
+                      disabled
+                      className="px-4 py-2 bg-white/5 text-slate-500 rounded-lg font-bold flex items-center gap-2 cursor-not-allowed border border-white/5"
+                    >
+                      <Clock className="w-4 h-4" /> Sent
+                    </button>
+                  ) : user.connectionStatus === "pending_received" ? (
+                    <button
+                      disabled
+                      className="px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-lg font-bold flex items-center gap-2 border border-yellow-500/20"
+                    >
+                      Check Requests
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleConnect(user._id)}
+                      className="px-4 py-2 bg-lime-500 text-black rounded-lg font-bold hover:bg-lime-400 transition-all flex items-center gap-2 shadow-lg shadow-lime-500/10"
+                    >
+                      <Plus className="w-4 h-4" /> Connect
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center text-slate-500 py-10">
+              No players found
+            </div>
+          )}
+        </div>
+      </Box>
+    </Modal>
+  );
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { username: viewedUsername } = useParams();
@@ -2699,6 +2872,7 @@ const Dashboard = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [connections, setConnections] = useState([]);
   const [showFindModal, setShowFindModal] = useState(false);
+  const [showConnectionsModal, setShowConnectionsModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [chatRecipient, setChatRecipient] = useState(null);
   const [viewedUser, setViewedUser] = useState(null);
@@ -3454,12 +3628,12 @@ const Dashboard = () => {
               <Users className="w-5 h-5 text-lime-500" />
               <h3 className="font-bold text-lg text-white">Connections</h3>
             </div>
-            <Link
-              to="/connections"
-              className="text-xs text-lime-500 hover:underline"
+            <button
+              onClick={() => setShowConnectionsModal(true)}
+              className="text-xs text-lime-500 hover:underline bg-transparent border-none cursor-pointer"
             >
               View All
-            </Link>
+            </button>
           </div>
 
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
@@ -3510,6 +3684,13 @@ const Dashboard = () => {
           onClose={() => setShowFindModal(false)}
           onConnect={handleConnect}
           connections={connections}
+        />
+        <ConnectionsModal
+          open={showConnectionsModal}
+          onClose={() => setShowConnectionsModal(false)}
+          onMessage={openChatWithUser}
+          onConnect={fetchConnections}
+          currentUser={user}
         />
         {/* Chat Modal */}
         <ChatModal
