@@ -1,14 +1,28 @@
 import createGlobe from "cobe";
 import { useEffect, useRef } from "react";
 import { cn } from "../../lib/utils";
+import { useTheme } from "../../context/ThemeContext";
+
+function hexToNormalizedRgb(hex) {
+    const r = parseInt(hex.substring(1, 3), 16) / 255;
+    const g = parseInt(hex.substring(3, 5), 16) / 255;
+    const b = parseInt(hex.substring(5, 7), 16) / 255;
+    return [r, g, b];
+}
 
 export const Globe = ({ className }) => {
     const canvasRef = useRef();
+    const { accentColor } = useTheme();
 
     useEffect(() => {
         let phi = 0;
 
         if (!canvasRef.current) return;
+
+        const baseColor = hexToNormalizedRgb(accentColor);
+        // Create variations for marker and glow
+        const markerColor = [Math.min(baseColor[0] + 0.2, 1), Math.min(baseColor[1] + 0.2, 1), Math.min(baseColor[2] + 0.2, 1)];
+        const glowColor = [baseColor[0], baseColor[1], baseColor[2]];
 
         const globe = createGlobe(canvasRef.current, {
             devicePixelRatio: 2,
@@ -20,9 +34,9 @@ export const Globe = ({ className }) => {
             diffuse: 2.5,
             mapSamples: 16000,
             mapBrightness: 12,
-            baseColor: [0.3, 0.6, 0.1],
-            markerColor: [0.5, 0.8, 0.1],
-            glowColor: [0.5, 0.8, 0.2],
+            baseColor: baseColor,
+            markerColor: markerColor,
+            glowColor: glowColor,
             opacity: 1,
             markers: [
                 // longitude latitude
@@ -40,7 +54,7 @@ export const Globe = ({ className }) => {
         return () => {
             globe.destroy();
         };
-    }, []);
+    }, [accentColor]);
 
     return (
         <div

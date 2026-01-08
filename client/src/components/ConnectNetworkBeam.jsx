@@ -11,7 +11,7 @@ const Circle = React.forwardRef(({ className, children }, ref) => {
       ref={ref}
       className={cn(
         "z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]",
-        "border-lime-500/30 bg-black shadow-lime-500/10 shadow-lg", // Dark theme adjustments
+        "border-primary/30 bg-bg-dark shadow-primary/10 shadow-lg", // Dark theme adjustments
         className,
       )}
     >
@@ -65,7 +65,7 @@ export function ConnectNetworkBeam({ className }) {
           </Circle>
         </div>
         <div className="flex flex-col justify-center">
-          <Circle ref={div4Ref} className="h-24 w-24 border-lime-400 bg-lime-500 shadow-lime-500/50 shadow-2xl">
+          <Circle ref={div4Ref} className="h-24 w-24 border-primary bg-primary shadow-primary/50 shadow-2xl">
             <Gamepad2 className="h-12 w-12 text-black" />
           </Circle>
         </div>

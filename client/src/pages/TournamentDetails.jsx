@@ -75,11 +75,11 @@ const TournamentDetails = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-black text-slate-200 flex items-center justify-center">
+            <div className="min-h-screen bg-bg-dark text-slate-200 flex items-center justify-center">
                 <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                    className="w-12 h-12 border-4 border-lime-500 border-t-transparent rounded-full"
+                    className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full"
                 />
             </div>
         );
@@ -87,11 +87,11 @@ const TournamentDetails = () => {
 
     if (!tournament) {
         return (
-            <div className="min-h-screen bg-black text-slate-200 flex flex-col items-center justify-center">
+            <div className="min-h-screen bg-bg-dark text-slate-200 flex flex-col items-center justify-center">
                 <h2 className="text-2xl font-bold mb-4">Tournament Not Found</h2>
                 <button 
                     onClick={() => navigate('/contests')}
-                    className="px-6 py-2 bg-lime-500 text-black rounded-full font-bold hover:bg-lime-400"
+                    className="px-6 py-2 bg-primary text-black rounded-full font-bold hover:bg-primary"
                 >
                     Back to Contests
                 </button>
@@ -100,14 +100,14 @@ const TournamentDetails = () => {
     }
 
     return (
-        <div className="min-h-screen bg-black text-slate-200 font-sans selection:bg-lime-500/30">
+        <div className="min-h-screen bg-bg-dark text-slate-200 font-sans selection:bg-primary/30">
             <Navbar user={user} logout={logout} />
 
             <main className="max-w-5xl mx-auto px-4 pt-24 pb-20">
                 {/* Back Button */}
                 <button 
                     onClick={() => navigate('/contests')}
-                    className="flex items-center gap-2 text-slate-400 hover:text-lime-500 mb-8 transition-colors group"
+                    className="flex items-center gap-2 text-slate-400 hover:text-primary mb-8 transition-colors group"
                 >
                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                     Back to Contests
@@ -134,16 +134,16 @@ const TournamentDetails = () => {
                                 <span className={`px-3 py-1 rounded-full text-xs font-bold ${getDifficultyColor(tournament.difficulty)}`}>
                                     {tournament.difficulty}
                                 </span>
-                                <span className="bg-lime-500 text-black px-3 py-1 rounded-full text-xs font-bold">
+                                <span className="bg-primary text-black px-3 py-1 rounded-full text-xs font-bold">
                                     {tournament.status}
                                 </span>
                             </div>
                             <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">{tournament.title}</h1>
-                            <p className="text-lime-400 font-bold text-xl">{tournament.game}</p>
+                            <p className="text-primary font-bold text-xl">{tournament.game}</p>
                         </div>
 
                         {/* Action Card (Desktop) */}
-                        <div className="hidden md:block bg-[#1b1f23]/80 backdrop-blur-md p-6 rounded-2xl border border-white/10 min-w-[300px]">
+                        <div className="hidden md:block bg-bg-card/80 backdrop-blur-md p-6 rounded-2xl border border-white/10 min-w-[300px]">
                             <div className="flex justify-between items-center mb-4">
                                 <span className="text-slate-400">Prize Pool</span>
                                 <span className="text-2xl font-bold text-white">{tournament.prizePool}</span>
@@ -157,7 +157,7 @@ const TournamentDetails = () => {
                                 <button
                                     onClick={handleJoin}
                                     disabled={joining || isFull}
-                                    className="w-full py-3 bg-lime-500 hover:bg-lime-400 disabled:bg-slate-700 disabled:text-slate-500 text-black rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+                                    className="w-full py-3 bg-primary hover:bg-primary disabled:bg-slate-700 disabled:text-slate-500 text-black rounded-xl font-bold transition-all flex items-center justify-center gap-2"
                                 >
                                     {joining ? (
                                          <motion.div
@@ -189,7 +189,7 @@ const TournamentDetails = () => {
                         <button
                             onClick={handleJoin}
                             disabled={joining || isFull}
-                            className="w-full py-4 bg-lime-500 hover:bg-lime-400 disabled:bg-slate-700 disabled:text-slate-500 text-black rounded-xl font-bold transition-all shadow-lg shadow-lime-500/20"
+                            className="w-full py-4 bg-primary hover:bg-primary disabled:bg-slate-700 disabled:text-slate-500 text-black rounded-xl font-bold transition-all shadow-lg shadow-primary/20"
                         >
                             {joining ? "Processing..." : isFull ? "Tournament Full" : "Register Now"}
                         </button>
@@ -224,10 +224,10 @@ const TournamentDetails = () => {
                         {/* Description */}
                         <section>
                             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                                <AlertCircle className="w-5 h-5 text-lime-500" />
+                                <AlertCircle className="w-5 h-5 text-primary" />
                                 About Tournament
                             </h2>
-                            <div className="bg-[#1b1f23] p-6 rounded-2xl border border-white/5 text-slate-300 leading-relaxed">
+                            <div className="bg-bg-card p-6 rounded-2xl border border-white/5 text-slate-300 leading-relaxed">
                                 {tournament.description}
                             </div>
                         </section>
@@ -235,10 +235,10 @@ const TournamentDetails = () => {
                          {/* Format & Rules (Static for now) */}
                          <section>
                             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                                <Swords className="w-5 h-5 text-lime-500" />
+                                <Swords className="w-5 h-5 text-primary" />
                                 Format & Rules
                             </h2>
-                            <div className="bg-[#1b1f23] p-6 rounded-2xl border border-white/5 space-y-4 text-slate-300">
+                            <div className="bg-bg-card p-6 rounded-2xl border border-white/5 space-y-4 text-slate-300">
                                 <ul className="list-disc list-inside space-y-2">
                                     <li>Single Elimination Bracket</li>
                                     <li>Best of 3 Matches (Finals Bo5)</li>
@@ -252,7 +252,7 @@ const TournamentDetails = () => {
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Info Card */}
-                        <div className="bg-[#1b1f23] p-6 rounded-2xl border border-white/5 space-y-4">
+                        <div className="bg-bg-card p-6 rounded-2xl border border-white/5 space-y-4">
                             <h3 className="font-bold text-white mb-4">Details</h3>
                             
                             <div className="flex items-center justify-between">
@@ -294,7 +294,7 @@ const TournamentDetails = () => {
                         </div>
 
                         {/* Participants List */}
-                         <div className="bg-[#1b1f23] p-6 rounded-2xl border border-white/5">
+                         <div className="bg-bg-card p-6 rounded-2xl border border-white/5">
                             <h3 className="font-bold text-white mb-4">Participants</h3>
                             {tournament.participants.length > 0 ? (
                                 <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
