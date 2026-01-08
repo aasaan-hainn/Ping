@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard'
 import Contests from './pages/Contests'
 import TournamentDetails from './pages/TournamentDetails'
 import NotFound from './pages/NotFound'
+import Settings from './pages/Settings'
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                         <Route path="/register" element={<AuthPage />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/dashboard/:username" element={<Dashboard />} />
+                        <Route path="/settings" element={<Settings />} />
                         <Route path="/contests" element={<Contests />} />
                         <Route path="/contests/:id" element={<TournamentDetails />} />
                         <Route path="*" element={<NotFound />} />
