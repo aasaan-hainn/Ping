@@ -10,6 +10,7 @@ export const sendEmail = async ({ email, subject, html }) => {
       host: process.env.SMTP_HOST || "smtp.gmail.com",
       port: port,
       secure: false, // true for 465, false for other ports
+
       requireTLS: true,
       logger: true,
       debug: true,
@@ -18,6 +19,7 @@ export const sendEmail = async ({ email, subject, html }) => {
       socketTimeout: 10000, // 10 seconds
       tls: {
         ciphers: "SSLv3",
+        rejectUnauthorized: false,
       },
       auth: {
         user: process.env.SMTP_EMAIL,
