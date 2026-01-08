@@ -47,12 +47,12 @@ const BentoCard = ({
 
     <div className="pointer-events-none z-20 flex transform-gpu flex-col gap-1 p-6 transition-all duration-300 group-hover:-translate-y-10 group-hover:scale-95 place-content-end h-full">
       {Icon && (
-        <div className="w-12 h-12 bg-lime-500/20 rounded-lg flex items-center justify-center backdrop-blur-sm mb-2 border border-lime-500/30">
-          <Icon className="h-8 w-8 origin-left transform-gpu text-lime-400 transition-all duration-300 ease-in-out group-hover:scale-75" />
+        <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center backdrop-blur-sm mb-2 border border-primary/30">
+          <Icon className="h-8 w-8 origin-left transform-gpu text-primary transition-all duration-300 ease-in-out group-hover:scale-75" />
         </div>
       )}
 
-      <h3 className="text-2xl font-semibold text-white group-hover:text-lime-400 transition-colors">
+      <h3 className="text-2xl font-semibold text-white group-hover:text-primary transition-colors">
         {name}
       </h3>
       <p className="max-w-lg text-neutral-300 group-hover:text-neutral-200">
@@ -65,7 +65,7 @@ const BentoCard = ({
         "pointer-events-none absolute bottom-0 flex w-full translate-y-10 transform-gpu flex-row items-center p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 z-20",
       )}
     >
-      <button className="pointer-events-auto flex items-center gap-2 rounded-full bg-lime-500/90 hover:bg-lime-400 px-4 py-2 text-sm font-bold text-black backdrop-blur-sm transition-all shadow-lg shadow-lime-500/20">
+      <button className="pointer-events-auto flex items-center gap-2 rounded-full bg-primary/90 hover:bg-primary px-4 py-2 text-sm font-bold text-black backdrop-blur-sm transition-all shadow-lg shadow-primary/20">
         {cta}
         <ArrowRightIcon className="ml-2 h-4 w-4" />
       </button>
