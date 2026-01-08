@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 export const sendEmail = async ({ email, subject, html }) => {
   try {
     const port = parseInt(process.env.SMTP_PORT || "587");
-    const secure = port === 465;
+    // const secure = port === 465;
 
     // Create a transporter using environment variables
     const transporter = nodemailer.createTransport({
@@ -16,6 +16,9 @@ export const sendEmail = async ({ email, subject, html }) => {
       connectionTimeout: 10000, // 10 seconds
       greetingTimeout: 10000, // 10 seconds
       socketTimeout: 10000, // 10 seconds
+      tls: {
+        ciphers: "SSLv3",
+      },
       auth: {
         user: process.env.SMTP_EMAIL,
         pass: process.env.SMTP_PASSWORD,
