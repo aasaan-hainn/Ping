@@ -367,8 +367,10 @@ router.post(
 // @access  Private
 router.get('/me', protect, async (req, res) => {
     try {
+        // Fetch user again to check if password exists (since protect middleware excludes it)
+        const user = await User.findById(req.user._id);
         res.json({
-            user: userResponse(req.user),
+            user: userResponse(user),
         })
     } catch (error) {
         console.error('Get user error:', error)
