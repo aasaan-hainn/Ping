@@ -56,6 +56,7 @@ export const userService = {
     updatePreferences: (data) => api.put('/users/preferences', data),
     search: (query) => api.get(`/search?q=${query}`),
     getExploreUsers: () => api.get('/users/explore'),
+    toggleEnchant: (userId) => api.post(`/users/${userId}/enchant`),
 }
 
 export const connectionService = {

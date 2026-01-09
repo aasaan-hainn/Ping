@@ -23,6 +23,56 @@ const userResponse = (user) => ({
     lastSeen: user.lastSeen,
     hasPassword: !!user.password,
     preferences: user.preferences,
+    enchantmentCount: user.enchantedBy ? user.enchantedBy.length : 0,
+    enchantedBy: user.enchantedBy || [],
+})
+
+// @route   POST /api/users/:userId/enchant
+// @desc    Toggle enchant user
+// @access  Private
+router.post('/:userId/enchant', protect, async (req, res) => {
+    try {
+        const targetUserId = req.params.userId
+        const currentUserId = req.user._id
+
+        if (targetUserId === currentUserId.toString()) {
+            return res.status(400).json({ message: 'You cannot enchant yourself' })
+        }
+
+        const user = await User.findById(targetUserId)
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' })
+        }
+
+        // Initialize if undefined
+        if (!user.enchantedBy) {
+            user.enchantedBy = []
+        }
+
+        const index = user.enchantedBy.indexOf(currentUserId)
+        let isEnchanted = false
+
+        if (index > -1) {
+            // Un-enchant
+            user.enchantedBy.splice(index, 1)
+            isEnchanted = false
+        } else {
+            // Enchant
+            user.enchantedBy.push(currentUserId)
+            isEnchanted = true
+        }
+
+        await user.save()
+
+        res.json({
+            enchantmentCount: user.enchantedBy.length,
+            isEnchanted
+        })
+
+    } catch (error) {
+        console.error('Enchant user error:', error)
+        res.status(500).json({ message: 'Server error' })
+    }
 })
 
 // @route   GET /api/users/explore

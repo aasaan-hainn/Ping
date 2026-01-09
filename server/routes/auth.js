@@ -25,6 +25,8 @@ const userResponse = (user) => ({
     lastSeen: user.lastSeen,
     hasPassword: !!user.password,
     preferences: user.preferences,
+    enchantmentCount: user.enchantedBy ? user.enchantedBy.length : 0,
+    enchantedBy: user.enchantedBy || [],
 })
 
 // @route   POST /api/auth/google

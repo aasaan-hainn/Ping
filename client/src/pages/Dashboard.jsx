@@ -18,6 +18,7 @@ import {
   Target,
   Swords,
   Brain,
+  Sparkles,
   Crosshair,
   Search,
   Bell,
@@ -3154,6 +3155,37 @@ const Dashboard = () => {
     }
   };
 
+  const handleEnchant = async () => {
+    if (!displayUser?._id || !user?._id) return;
+    
+    const isCurrentlyEnchanted = displayUser.enchantedBy?.includes(user._id);
+    
+    if (viewedUser && viewedUser._id === displayUser._id) {
+        setViewedUser(prev => ({
+            ...prev,
+            enchantmentCount: (prev.enchantmentCount || 0) + (isCurrentlyEnchanted ? -1 : 1),
+            enchantedBy: isCurrentlyEnchanted 
+                ? (prev.enchantedBy || []).filter(id => id !== user._id)
+                : [...(prev.enchantedBy || []), user._id]
+        }));
+    }
+
+    try {
+      const res = await userService.toggleEnchant(displayUser._id);
+      if (viewedUser && viewedUser._id === displayUser._id) {
+          setViewedUser(prev => ({
+              ...prev,
+              enchantmentCount: res.data.enchantmentCount,
+              enchantedBy: res.data.isEnchanted
+                 ? [...(prev.enchantedBy || []).filter(id => id !== user._id), user._id]
+                 : (prev.enchantedBy || []).filter(id => id !== user._id)
+          }));
+      }
+    } catch (error) {
+       console.error("Enchant failed", error);
+    }
+  };
+
   // Fetch profile data (teams, tournaments, setup)
   const fetchProfileData = async () => {
     try {
@@ -3460,6 +3492,22 @@ const Dashboard = () => {
           <div className="absolute -bottom-48 left-0 right-0 flex flex-col items-center z-20">
             <div className="relative">
               <div className="w-32 h-32 rounded-full p-1 bg-bg-dark relative group">
+                {/* Enchantment Bubble */}
+                {displayUser?.enchantmentCount >= 0 && (
+                  <motion.div 
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="absolute -top-6 -right-10 z-30"
+                  >
+                    <div className="relative bg-white text-black text-xs font-bold px-3 py-1.5 rounded-2xl border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1">
+                       <Sparkles className="w-3 h-3 text-purple-600" />
+                       {displayUser.enchantmentCount}
+                       {/* Comic bubble tail */}
+                       <div className="absolute -bottom-1 left-2 w-3 h-3 bg-white border-b-2 border-r-2 border-black transform rotate-45 translate-x-1"></div>
+                    </div>
+                  </motion.div>
+                )}
+
                 <Avatar
                   src={displayUser?.avatar}
                   className="w-full h-full border-4 border-[#1b1f23]"
@@ -3536,6 +3584,21 @@ const Dashboard = () => {
                   >
                     <MessageSquare className="w-4 h-4" /> Message
                   </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={handleEnchant}
+                    className={`px-6 py-2 rounded-full font-bold transition-all flex items-center gap-2 border ${
+                        displayUser?.enchantedBy?.includes(user?._id)
+                        ? "bg-purple-500 text-white border-purple-500 shadow-lg shadow-purple-500/30" 
+                        : "bg-white/10 text-purple-400 border-purple-500/50 hover:bg-purple-500/20"
+                    }`}
+                  >
+                    <Sparkles className="w-4 h-4" /> 
+                    {displayUser?.enchantedBy?.includes(user?._id) ? "Enchanted" : "Enchant"}
+                  </motion.button>
+
                   {!isConnected && (
                     <motion.button
                       whileHover={{ scale: 1.05 }}

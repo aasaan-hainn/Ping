@@ -112,6 +112,11 @@ const userSchema = new mongoose.Schema(
             enum: ['online', 'offline', 'away', 'busy'],
             default: 'offline',
         },
+        enchantedBy: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            default: []
+        }],
         pushSubscription: {
             endpoint: { type: String },
             keys: {
