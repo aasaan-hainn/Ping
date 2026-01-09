@@ -29,3 +29,6 @@ coverage/
 # Misc
 *.local
 .eslintcache
+
+GEMINI.md
+AGENTS.md
