@@ -4,6 +4,7 @@ import User from '../models/User.js'
 import Connection from '../models/Connection.js'
 import { protect } from '../middleware/auth.js'
 import { validate } from '../middleware/validator.js'
+import { getConnectedUsers } from '../socket/index.js'
 
 const router = express.Router()
 
@@ -21,6 +22,7 @@ const userResponse = (user) => ({
     status: user.status,
     lastSeen: user.lastSeen,
     hasPassword: !!user.password,
+    preferences: user.preferences,
 })
 
 // @route   GET /api/users/explore
@@ -188,6 +190,65 @@ router.put(
             }
         } catch (error) {
             console.error('Change password error:', error)
+            res.status(500).json({ message: 'Server error' })
+        }
+    }
+)
+
+// @route   PUT /api/users/preferences
+// @desc    Update user preferences
+// @access  Private
+router.put(
+    '/preferences',
+    [
+        protect,
+        body('showOnlineStatus').isBoolean().withMessage('showOnlineStatus must be a boolean'),
+        validate,
+    ],
+    async (req, res) => {
+        try {
+            const user = await User.findById(req.user._id)
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' })
+            }
+
+            const { showOnlineStatus } = req.body
+            const io = req.app.get('io')
+            
+            // If checking user.preferences directly, ensure it exists (schema default handles this for new users, but older docs might not have it)
+            if (!user.preferences) user.preferences = { showOnlineStatus: true }
+
+            user.preferences.showOnlineStatus = showOnlineStatus
+            
+            // Handle Status Update based on preference change
+            const connectedUsers = getConnectedUsers()
+            const isConnected = connectedUsers.has(user._id.toString())
+
+            if (showOnlineStatus) {
+                // User wants to be seen. If they are actually connected, set to online.
+                if (isConnected) {
+                    user.status = 'online'
+                    // Broadcast online
+                    io.emit('user:online', {
+                        userId: user._id,
+                        username: user.username,
+                    })
+                }
+            } else {
+                // User wants to hide. Set to offline.
+                user.status = 'offline'
+                // Broadcast offline
+                io.emit('user:offline', {
+                    userId: user._id,
+                    username: user.username,
+                })
+            }
+
+            const updatedUser = await user.save()
+            res.json({ user: userResponse(updatedUser) })
+
+        } catch (error) {
+            console.error('Update preferences error:', error)
             res.status(500).json({ message: 'Server error' })
         }
     }

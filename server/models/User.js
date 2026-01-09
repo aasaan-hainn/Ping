@@ -127,6 +127,9 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        preferences: {
+            showOnlineStatus: { type: Boolean, default: true }
+        },
         otp: {
             type: String,
         },

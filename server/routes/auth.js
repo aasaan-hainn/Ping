@@ -24,6 +24,7 @@ const userResponse = (user) => ({
     status: user.status,
     lastSeen: user.lastSeen,
     hasPassword: !!user.password,
+    preferences: user.preferences,
 })
 
 // @route   POST /api/auth/google

@@ -23,7 +23,7 @@ import ChangePasswordDialog from '../components/ChangePasswordDialog';
 
 const Settings = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const { mode, setMode, accentColor, changeAccentColor } = useTheme();
   const [activeTab, setActiveTab] = useState('account');
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -67,8 +67,36 @@ const Settings = () => {
   
   const [privacy, setPrivacy] = useState({
     profileVisibility: 'public',
-    onlineStatus: true
+    onlineStatus: user?.preferences?.showOnlineStatus ?? true
   });
+
+  // Update privacy state when user object changes (e.g. initial load)
+  useEffect(() => {
+    if (user?.preferences) {
+      setPrivacy(prev => ({
+        ...prev,
+        onlineStatus: user.preferences.showOnlineStatus ?? true
+      }));
+    }
+  }, [user]);
+
+  const handleOnlineStatusToggle = async () => {
+    const newStatus = !privacy.onlineStatus;
+    // Optimistic update
+    setPrivacy(prev => ({ ...prev, onlineStatus: newStatus }));
+    
+    try {
+      const response = await userService.updatePreferences({ showOnlineStatus: newStatus });
+      // Update global user context
+      if (updateUser) {
+        updateUser(response.data.user);
+      }
+    } catch (error) {
+      console.error("Failed to update online status preference", error);
+      // Revert on error
+      setPrivacy(prev => ({ ...prev, onlineStatus: !newStatus }));
+    }
+  };
 
   const tabs = [
     { id: 'account', label: 'Account', icon: User },
@@ -280,7 +308,7 @@ const Settings = () => {
                     <p className="text-xs text-slate-400">Allow others to see when you are online.</p>
                   </div>
                   <div 
-                    onClick={() => setPrivacy({...privacy, onlineStatus: !privacy.onlineStatus})}
+                    onClick={handleOnlineStatusToggle}
                     className={`w-14 h-8 rounded-full p-1 cursor-pointer transition-colors ${
                       privacy.onlineStatus ? 'bg-primary' : 'bg-slate-700'
                     }`}

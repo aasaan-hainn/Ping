@@ -43,19 +43,28 @@ export const initSocket = (io) => {
 
         // Update user status to online
         try {
-            await User.findByIdAndUpdate(socket.user._id, {
-                status: 'online',
-                lastSeen: new Date(),
-            })
+            const userWithPrefs = await User.findById(socket.user._id);
+            const showOnlineStatus = userWithPrefs?.preferences?.showOnlineStatus !== false; // Default true if undefined
+
+            if (showOnlineStatus) {
+                await User.findByIdAndUpdate(socket.user._id, {
+                    status: 'online',
+                    lastSeen: new Date(),
+                })
+                
+                // Broadcast user online status
+                socket.broadcast.emit('user:online', {
+                    userId: socket.user._id,
+                    username: socket.user.username,
+                })
+            } else {
+                 // Even if connected, stay 'offline' in DB if preferences say so
+                 // But we might want to update lastSeen? Maybe better not to leak presence.
+                 // Let's just NOT set them to online.
+            }
         } catch (error) {
             console.error('Error updating user status:', error)
         }
-
-        // Broadcast user online status
-        socket.broadcast.emit('user:online', {
-            userId: socket.user._id,
-            username: socket.user.username,
-        })
 
         // Join user to their own room for private messages
         socket.join(socket.user._id.toString())

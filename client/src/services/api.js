@@ -53,6 +53,7 @@ export const userService = {
     updateProfile: (data) => api.put('/users/profile', data),
     changePassword: (data) => api.put('/users/change-password', data),
     deleteAccount: () => api.delete('/users/profile'),
+    updatePreferences: (data) => api.put('/users/preferences', data),
     search: (query) => api.get(`/search?q=${query}`),
     getExploreUsers: () => api.get('/users/explore'),
 }
