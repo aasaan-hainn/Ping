@@ -152,4 +152,23 @@ router.put(
     }
 )
 
+// @route   DELETE /api/users/profile
+// @desc    Delete user profile
+// @access  Private
+router.delete('/profile', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id)
+
+        if (user) {
+            await User.deleteOne({ _id: user._id })
+            res.json({ message: 'User removed' })
+        } else {
+            res.status(404).json({ message: 'User not found' })
+        }
+    } catch (error) {
+        console.error('Delete user error:', error)
+        res.status(500).json({ message: 'Server error' })
+    }
+})
+
 export default router

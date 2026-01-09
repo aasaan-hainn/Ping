@@ -51,6 +51,7 @@ export const authService = {
 export const userService = {
     getProfile: (username) => api.get(`/users/${username}`),
     updateProfile: (data) => api.put('/users/profile', data),
+    deleteAccount: () => api.delete('/users/profile'),
     search: (query) => api.get(`/search?q=${query}`),
     getExploreUsers: () => api.get('/users/explore'),
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -18,12 +18,43 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { userService } from '../services/api';
 
 const Settings = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { mode, setMode, accentColor, changeAccentColor } = useTheme();
   const [activeTab, setActiveTab] = useState('account');
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      setDeleting(true);
+      try {
+        await userService.deleteAccount();
+        logout();
+        navigate('/');
+      } catch (error) {
+        console.error("Failed to delete account", error);
+        alert("Failed to delete account. Please try again.");
+      } finally {
+        setDeleting(false);
+      }
+    }
+  };
 
   // --- Mock State for UI Demo ---
   const [notifications, setNotifications] = useState({
@@ -50,7 +81,15 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-dark text-slate-200 font-sans selection:bg-primary/30">
+    <div className="min-h-screen bg-bg-dark text-slate-200 font-sans selection:bg-primary/30 overflow-hidden relative">
+      {/* Mouse Glow Effect */}
+      <div
+        className="fixed w-[300px] h-[300px] bg-primary rounded-full filter blur-[100px] opacity-20 pointer-events-none z-0 transition-opacity duration-300"
+        style={{
+          left: `${mousePos.x - 150}px`,
+          top: `${mousePos.y - 150}px`,
+        }}
+      />
       
       {/* Header */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-bg-dark/80 backdrop-blur-md border-b border-white/10 h-16">
@@ -161,8 +200,12 @@ const Settings = () => {
                       <p className="text-sm text-slate-400 mt-1 mb-4">
                         Once you delete your account, there is no going back. Please be certain.
                       </p>
-                      <button className="px-6 py-2 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors">
-                        Delete Account
+                      <button 
+                        onClick={handleDeleteAccount}
+                        disabled={deleting}
+                        className="px-6 py-2 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {deleting ? "Deleting..." : "Delete Account"}
                       </button>
                     </div>
                   </div>
