@@ -3689,7 +3689,7 @@ const Dashboard = () => {
             />
             {/* Upload banner button - only show for own profile */}
             {isOwnProfile && (
-              <div className="absolute top-4 right-4 z-20">
+              <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20">
                 <input
                   type="file"
                   accept="image/*"
@@ -3701,7 +3701,7 @@ const Dashboard = () => {
                 />
                 <label
                   htmlFor="banner-upload"
-                  className="flex items-center gap-2 px-4 py-2 bg-bg-dark/50 backdrop-blur-md rounded-full cursor-pointer hover:bg-bg-dark/70 transition-colors border border-white/20"
+                  className="flex items-center gap-2 p-2 sm:px-4 sm:py-2 bg-bg-dark/50 backdrop-blur-md rounded-full cursor-pointer hover:bg-bg-dark/70 transition-colors border border-white/20"
                 >
                   {uploadingBanner ? (
                     <motion.div
@@ -3716,7 +3716,7 @@ const Dashboard = () => {
                   ) : (
                     <Camera className="w-4 h-4 text-white" />
                   )}
-                  <span className="text-white text-sm font-medium">
+                  <span className="text-white text-sm font-medium hidden sm:block">
                     Change Banner
                   </span>
                 </label>
