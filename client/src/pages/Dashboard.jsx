@@ -4163,12 +4163,14 @@ const Dashboard = () => {
               <Users className="w-5 h-5 text-primary" />
               <h3 className="font-bold text-lg text-white">Connections</h3>
             </div>
-            <button
-              onClick={() => setShowConnectionsModal(true)}
-              className="text-xs text-primary hover:underline bg-transparent border-none cursor-pointer"
-            >
-              View All
-            </button>
+            {isOwnProfile && (
+              <button
+                onClick={() => setShowConnectionsModal(true)}
+                className="text-xs text-primary hover:underline bg-transparent border-none cursor-pointer"
+              >
+                View All
+              </button>
+            )}
           </div>
 
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
