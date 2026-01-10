@@ -65,6 +65,7 @@ export const connectionService = {
         ? api.get(`/connections?userId=${userId}`)
         : api.get('/connections'),
     getPendingRequests: () => api.get('/connections/pending'),
+    getStatus: (userId) => api.get(`/connections/status/${userId}`),
 }
 
 export const messageService = {

@@ -149,4 +149,42 @@ router.get('/pending', protect, async (req, res) => {
     }
 })
 
+// @route   GET /api/connections/status/:userId
+// @desc    Get connection status with a specific user
+// @access  Private
+router.get('/status/:userId', protect, async (req, res) => {
+    try {
+        const targetId = req.params.userId;
+        const currentId = req.user._id;
+
+        const connection = await Connection.findOne({
+            $or: [
+                { requester: currentId, recipient: targetId },
+                { requester: targetId, recipient: currentId }
+            ]
+        });
+
+        if (!connection) {
+            return res.json({ status: 'none' });
+        }
+
+        if (connection.status === 'accepted') {
+            return res.json({ status: 'connected', connectionId: connection._id });
+        }
+
+        if (connection.status === 'pending') {
+            if (connection.requester.toString() === currentId.toString()) {
+                return res.json({ status: 'pending_sent', connectionId: connection._id });
+            } else {
+                return res.json({ status: 'pending_received', requestId: connection._id });
+            }
+        }
+
+        res.json({ status: 'none' });
+    } catch (error) {
+        console.error('Get connection status error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 export default router

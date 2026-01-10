@@ -3287,7 +3287,28 @@ const Dashboard = () => {
   const isOwnProfile = !viewedUsername || viewedUsername === user?.username;
   const displayUser = isOwnProfile ? user : viewedUser;
 
-  // Check if the viewed user is already a connection
+  // Connection Status State
+  const [connectionStatus, setConnectionStatus] = useState('none'); // 'none', 'pending_sent', 'pending_received', 'connected'
+  const [requestId, setRequestId] = useState(null);
+
+  // Fetch connection status when viewing another profile
+  useEffect(() => {
+    const fetchStatus = async () => {
+      if (!isOwnProfile && viewedUser) {
+        try {
+          const userId = viewedUser._id || viewedUser.id;
+          const res = await connectionService.getStatus(userId);
+          setConnectionStatus(res.data.status);
+          if (res.data.requestId) setRequestId(res.data.requestId);
+        } catch (error) {
+          console.error("Failed to fetch connection status", error);
+        }
+      }
+    };
+    fetchStatus();
+  }, [isOwnProfile, viewedUser]);
+
+  // Check if the viewed user is already a connection (Legacy check, primarily for 'connections' list)
   const isConnected = React.useMemo(() => {
     if (isOwnProfile || !viewedUser) return false;
     const viewedId = viewedUser._id || viewedUser.id;
@@ -3931,13 +3952,47 @@ const Dashboard = () => {
                         : "Enchant"}
                   </motion.button>
 
-                  {!isConnected && (
+                  {/* Connection Button */}
+                  {connectionStatus === 'connected' ? (
+                    <button
+                      disabled
+                      className="px-4 py-1.5 sm:px-6 sm:py-2 bg-primary/20 text-primary rounded-full font-bold flex items-center gap-2 border border-primary/50 text-sm sm:text-base cursor-default"
+                    >
+                      <Users className="w-4 h-4" /> Connected
+                    </button>
+                  ) : connectionStatus === 'pending_sent' ? (
+                    <button
+                      disabled
+                      className="px-4 py-1.5 sm:px-6 sm:py-2 bg-white/5 text-slate-400 rounded-full font-bold flex items-center gap-2 border border-white/10 text-sm sm:text-base cursor-default"
+                    >
+                      <Clock className="w-4 h-4" /> Requested
+                    </button>
+                  ) : connectionStatus === 'pending_received' ? (
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() =>
-                        handleConnect(viewedUser?._id || viewedUser?.id)
-                      }
+                      onClick={async () => {
+                        try {
+                          await connectionService.acceptRequest(requestId);
+                          setConnectionStatus('connected');
+                          fetchConnections(); // Refresh lists
+                        } catch (err) {
+                          console.error('Failed to accept', err);
+                        }
+                      }}
+                      className="px-4 py-1.5 sm:px-6 sm:py-2 bg-green-500 text-black rounded-full font-bold hover:bg-green-400 transition-all flex items-center gap-2 shadow-lg shadow-green-500/20 text-sm sm:text-base"
+                    >
+                      <Check className="w-4 h-4" /> Accept
+                    </motion.button>
+                  ) : (
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={async () => {
+                        const targetId = viewedUser?._id || viewedUser?.id;
+                        await handleConnect(targetId);
+                        setConnectionStatus('pending_sent');
+                      }}
                       className="px-4 py-1.5 sm:px-6 sm:py-2 bg-white/10 text-primary rounded-full font-bold hover:bg-primary/20 transition-all flex items-center gap-2 border border-primary/50 text-sm sm:text-base"
                     >
                       <Users className="w-4 h-4" /> +Connect
