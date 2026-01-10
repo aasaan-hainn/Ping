@@ -4183,17 +4183,19 @@ const Dashboard = () => {
                 No connections yet. Go find some players!
               </div>
             )}
-            <div
-              onClick={() => setShowFindModal(true)}
-              className="flex flex-col items-center justify-center min-w-[80px] cursor-pointer group"
-            >
-              <div className="w-14 h-14 rounded-full border-2 border-dashed border-slate-700 flex items-center justify-center group-hover:border-slate-500 transition-colors mb-2">
-                <span className="text-slate-500 group-hover:text-white transition-colors">
-                  +
-                </span>
+            {isOwnProfile && (
+              <div
+                onClick={() => setShowFindModal(true)}
+                className="flex flex-col items-center justify-center min-w-[80px] cursor-pointer group"
+              >
+                <div className="w-14 h-14 rounded-full border-2 border-dashed border-slate-700 flex items-center justify-center group-hover:border-slate-500 transition-colors mb-2">
+                  <span className="text-slate-500 group-hover:text-white transition-colors">
+                    +
+                  </span>
+                </div>
+                <span className="text-xs text-slate-500">Find</span>
               </div>
-              <span className="text-xs text-slate-500">Find</span>
-            </div>
+            )}
           </div>
         </motion.div>
         <FindModal
