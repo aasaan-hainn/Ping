@@ -63,15 +63,15 @@ router.post('/games', protect, async (req, res) => {
             user.gameExperiences.forEach(g => g.isPrimary = false)
         }
 
-        user.gameExperiences.push({ 
-            game: game.trim(), 
+        user.gameExperiences.push({
+            game: game.trim(),
             genre: genre || '',
-            role, 
-            rank, 
-            peakRank, 
-            isPrimary: isPrimary || user.gameExperiences.length === 0 
+            role,
+            rank,
+            peakRank,
+            isPrimary: isPrimary || user.gameExperiences.length === 0
         })
-        
+
         await user.save()
 
         res.status(201).json(user.gameExperiences)
@@ -136,7 +136,7 @@ router.put('/games/:id', protect, async (req, res) => {
 router.delete('/games/:id', protect, async (req, res) => {
     try {
         const user = await User.findById(req.user._id)
-        
+
         // Check if deleting primary game
         const gameToDelete = user.gameExperiences.find(g => g._id.toString() === req.params.id)
         const wasPrimary = gameToDelete?.isPrimary
@@ -271,14 +271,14 @@ router.delete('/team-history/:id', protect, async (req, res) => {
 // @access  Private
 router.post('/tournaments', protect, async (req, res) => {
     try {
-        const { name, placement, date } = req.body
+        const { name, placement, description, date } = req.body
 
         if (!name) {
             return res.status(400).json({ message: 'Tournament name is required' })
         }
 
         const user = await User.findById(req.user._id)
-        user.tournamentExperience.push({ name, placement, date })
+        user.tournamentExperience.push({ name, placement, description, date })
         await user.save()
 
         res.status(201).json(user.tournamentExperience)
@@ -293,7 +293,7 @@ router.post('/tournaments', protect, async (req, res) => {
 // @access  Private
 router.put('/tournaments/:id', protect, async (req, res) => {
     try {
-        const { name, placement, date } = req.body
+        const { name, placement, description, date } = req.body
         const user = await User.findById(req.user._id)
 
         const tournamentIndex = user.tournamentExperience.findIndex(
@@ -308,6 +308,7 @@ router.put('/tournaments/:id', protect, async (req, res) => {
             ...user.tournamentExperience[tournamentIndex].toObject(),
             name: name || user.tournamentExperience[tournamentIndex].name,
             placement: placement !== undefined ? placement : user.tournamentExperience[tournamentIndex].placement,
+            description: description !== undefined ? description : user.tournamentExperience[tournamentIndex].description,
             date: date || user.tournamentExperience[tournamentIndex].date
         }
 

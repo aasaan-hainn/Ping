@@ -13,6 +13,7 @@ const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 const userResponse = (user) => ({
     id: user._id,
     username: user.username,
+    fullName: user.fullName,
     email: user.email,
     avatar: user.avatar,
     bannerImage: user.bannerImage,
