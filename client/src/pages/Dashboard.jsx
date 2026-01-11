@@ -74,6 +74,9 @@ import {
 import { subscribeUserToPush } from "../utils/pushNotifications";
 import Navbar from "../components/navigation/Navbar";
 import EnchantmentBubble from "../components/EnchantmentBubble";
+import { pdf } from "@react-pdf/renderer";
+import GamingResumePDF from "../components/GamingResumePDF";
+import ResumeValidationModal from "../components/ResumeValidationModal";
 
 // --- Custom Icons for Socials ---
 const DiscordIcon = ({ className }) => (
@@ -1311,11 +1314,10 @@ const ChatModal = ({ open, onClose, recipient, currentUser }) => {
                     className={`flex ${isMine(msg) ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[75%] px-4 py-2.5 rounded-2xl ${
-                        isMine(msg)
-                          ? "bg-gradient-to-r from-primary to-secondary text-black rounded-br-md"
-                          : "bg-white/10 text-white rounded-bl-md"
-                      }`}
+                      className={`max-w-[75%] px-4 py-2.5 rounded-2xl ${isMine(msg)
+                        ? "bg-gradient-to-r from-primary to-secondary text-black rounded-br-md"
+                        : "bg-white/10 text-white rounded-bl-md"
+                        }`}
                     >
                       <p className="text-sm leading-relaxed">{msg.content}</p>
                       <p
@@ -2158,6 +2160,11 @@ const ExperienceTournaments = ({
                 )}
               </div>
             </div>
+            {tournament.description && (
+              <p className="text-sm text-slate-400 mt-2 ml-8">
+                {tournament.description}
+              </p>
+            )}
           </div>
         ))
       ) : (
@@ -3283,6 +3290,10 @@ const Dashboard = () => {
   // Avatar dropdown menu state
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
 
+  // Resume validation modal state
+  const [showResumeValidationModal, setShowResumeValidationModal] = useState(false);
+  const [missingResumeFields, setMissingResumeFields] = useState([]);
+
   // Determine if viewing own profile or another user's
   const isOwnProfile = !viewedUsername || viewedUsername === user?.username;
   const displayUser = isOwnProfile ? user : viewedUser;
@@ -3886,9 +3897,54 @@ const Dashboard = () => {
                     )}
 
                     <button
-                      onClick={() => {
-                        window.print();
+                      onClick={async () => {
                         setShowAvatarMenu(false);
+
+                        // Validate required fields
+                        const missing = [];
+                        const hasPrimaryGame = gameExperiences?.some((g) => g.isPrimary);
+                        if (!hasPrimaryGame && gameExperiences?.length === 0) {
+                          missing.push("mainGame");
+                        }
+                        if (!displayUser?.fullName || displayUser.fullName.trim() === "") {
+                          missing.push("fullName");
+                        }
+                        if (!displayUser?.skills || displayUser.skills.length === 0) {
+                          missing.push("skills");
+                        }
+
+                        if (missing.length > 0) {
+                          setMissingResumeFields(missing);
+                          setShowResumeValidationModal(true);
+                          return;
+                        }
+
+                        // Generate and download PDF
+                        try {
+                          const doc = (
+                            <GamingResumePDF
+                              user={displayUser}
+                              gameExperiences={gameExperiences}
+                              teams={teams}
+                              tournaments={tournaments}
+                              gamingSetup={gamingSetup}
+                              socials={socials}
+                              supportedGames={supportedGames}
+                            />
+                          );
+                          const blob = await pdf(doc).toBlob();
+                          const url = URL.createObjectURL(blob);
+                          const link = document.createElement("a");
+                          link.href = url;
+                          link.download = `${displayUser?.username || "gaming"}-resume.pdf`;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                          URL.revokeObjectURL(url);
+                        } catch (error) {
+                          console.error("Failed to generate PDF:", error);
+                          alert("Failed to generate PDF. Please try again.");
+                        }
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 cursor-pointer transition-colors text-sm text-slate-200 hover:text-white text-left"
                     >
@@ -3936,10 +3992,9 @@ const Dashboard = () => {
                     onClick={handleEnchantToggle}
                     disabled={enchantmentLoading}
                     className={`px-4 py-1.5 sm:px-6 sm:py-2 rounded-full font-bold transition-all flex items-center gap-2 border disabled:opacity-50 text-sm sm:text-base
-                      ${
-                        hasEnchanted
-                          ? "bg-primary/20 text-primary border-primary"
-                          : "bg-white/10 text-white border-white/20 hover:border-primary/50 hover:text-primary"
+                      ${hasEnchanted
+                        ? "bg-primary/20 text-primary border-primary"
+                        : "bg-white/10 text-white border-white/20 hover:border-primary/50 hover:text-primary"
                       }`}
                   >
                     <Sparkles
@@ -4113,58 +4168,58 @@ const Dashboard = () => {
                 <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-2">
                   {secondaryGames.length > 0
                     ? secondaryGames.map((game) => (
-                        <div
-                          key={game._id}
-                          className="bg-white/5 border border-white/5 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors group relative"
-                        >
-                          {isOwnProfile && (
-                            <div className="absolute right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                onClick={() => {
-                                  setEditingGame(game);
-                                  setShowGameModal(true);
-                                }}
-                                className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"
-                              >
-                                <Pencil className="w-3.5 h-3.5 text-slate-400 hover:text-white" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteGame(game._id)}
-                                className="p-1.5 hover:bg-red-500/20 rounded-lg transition-colors"
-                              >
-                                <Trash2 className="w-3.5 h-3.5 text-slate-400 hover:text-red-500" />
-                              </button>
-                            </div>
-                          )}
-                          <div className="w-10 h-10 rounded-lg bg-bg-dark/40 border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
-                            <GameLogo
-                              gameName={game.game}
-                              supportedGames={supportedGames}
-                              className="w-full h-full p-1.5"
-                            />
+                      <div
+                        key={game._id}
+                        className="bg-white/5 border border-white/5 rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition-colors group relative"
+                      >
+                        {isOwnProfile && (
+                          <div className="absolute right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={() => {
+                                setEditingGame(game);
+                                setShowGameModal(true);
+                              }}
+                              className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"
+                            >
+                              <Pencil className="w-3.5 h-3.5 text-slate-400 hover:text-white" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteGame(game._id)}
+                              className="p-1.5 hover:bg-red-500/20 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 text-slate-400 hover:text-red-500" />
+                            </button>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-bold text-slate-200 text-sm truncate">
-                              {game.game}
-                            </h4>
-                            <div className="flex items-center gap-2 text-xs text-slate-500">
-                              <span>{game.role}</span>
-                              <span>•</span>
-                              <span className="text-primary/80">
-                                {game.rank}
-                              </span>
-                            </div>
+                        )}
+                        <div className="w-10 h-10 rounded-lg bg-bg-dark/40 border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+                          <GameLogo
+                            gameName={game.game}
+                            supportedGames={supportedGames}
+                            className="w-full h-full p-1.5"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-bold text-slate-200 text-sm truncate">
+                            {game.game}
+                          </h4>
+                          <div className="flex items-center gap-2 text-xs text-slate-500">
+                            <span>{game.role}</span>
+                            <span>•</span>
+                            <span className="text-primary/80">
+                              {game.rank}
+                            </span>
                           </div>
                         </div>
-                      ))
+                      </div>
+                    ))
                     : !primaryGame && (
-                        <div className="flex flex-col items-center justify-center h-full text-slate-500 text-sm">
-                          <p>No games added yet.</p>
-                          {isOwnProfile && (
-                            <p>Click the + button to add your experience.</p>
-                          )}
-                        </div>
-                      )}
+                      <div className="flex flex-col items-center justify-center h-full text-slate-500 text-sm">
+                        <p>No games added yet.</p>
+                        {isOwnProfile && (
+                          <p>Click the + button to add your experience.</p>
+                        )}
+                      </div>
+                    )}
                 </div>
               </div>
             ) : (
@@ -4403,11 +4458,10 @@ const Dashboard = () => {
                 <button
                   key={tab}
                   onClick={() => setPostTab(tab)}
-                  className={`relative px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300 overflow-hidden ${
-                    postTab === tab
-                      ? "text-black shadow-lg shadow-primary/25"
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
+                  className={`relative px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300 overflow-hidden ${postTab === tab
+                    ? "text-black shadow-lg shadow-primary/25"
+                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                    }`}
                 >
                   {postTab === tab && (
                     <motion.div
@@ -4502,6 +4556,13 @@ const Dashboard = () => {
           </div>
         </motion.div>
       </main>
+
+      {/* Resume Validation Modal */}
+      <ResumeValidationModal
+        open={showResumeValidationModal}
+        onClose={() => setShowResumeValidationModal(false)}
+        missingFields={missingResumeFields}
+      />
     </div>
   );
 };
