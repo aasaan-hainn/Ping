@@ -43,79 +43,81 @@ const ResumeValidationModal = ({ open, onClose, missingFields }) => {
                         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
                     />
 
-                    {/* Modal */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-[#1a1f2e] border border-white/10 rounded-2xl shadow-2xl z-[101] overflow-hidden"
-                    >
-                        {/* Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-white/10">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-yellow-500/20 rounded-lg">
-                                    <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                    {/* Modal Container - centered with flexbox */}
+                    <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 sm:p-6 pointer-events-none">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="w-full max-w-[92vw] sm:max-w-md bg-[#1a1f2e] border border-white/10 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto"
+                        >
+                            {/* Header */}
+                            <div className="flex items-center justify-between p-3 sm:p-4 border-b border-white/10">
+                                <div className="flex items-center gap-2 sm:gap-3">
+                                    <div className="p-1.5 sm:p-2 bg-yellow-500/20 rounded-lg">
+                                        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500" />
+                                    </div>
+                                    <h2 className="text-base sm:text-lg font-bold text-white">
+                                        Complete Your Profile
+                                    </h2>
                                 </div>
-                                <h2 className="text-lg font-bold text-white">
-                                    Complete Your Profile
-                                </h2>
+                                <button
+                                    onClick={onClose}
+                                    className="p-1.5 sm:p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                >
+                                    <X className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
+                                </button>
                             </div>
-                            <button
-                                onClick={onClose}
-                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                            >
-                                <X className="w-5 h-5 text-slate-400" />
-                            </button>
-                        </div>
 
-                        {/* Content */}
-                        <div className="p-4 space-y-4">
-                            <p className="text-sm text-slate-400">
-                                To download your gaming resume, please complete the following
-                                required fields:
-                            </p>
+                            {/* Content */}
+                            <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
+                                <p className="text-xs sm:text-sm text-slate-400">
+                                    To download your gaming resume, please complete the following
+                                    required fields:
+                                </p>
 
-                            <div className="space-y-3">
-                                {missingFields.map((field) => {
-                                    const guidance = fieldGuidance[field];
-                                    if (!guidance) return null;
+                                <div className="space-y-2 sm:space-y-3">
+                                    {missingFields.map((field) => {
+                                        const guidance = fieldGuidance[field];
+                                        if (!guidance) return null;
 
-                                    const IconComponent = guidance.icon;
+                                        const IconComponent = guidance.icon;
 
-                                    return (
-                                        <motion.div
-                                            key={field}
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            className="flex items-start gap-3 p-3 bg-white/5 border border-white/10 rounded-xl"
-                                        >
-                                            <div className="p-2 bg-primary/20 rounded-lg shrink-0">
-                                                <IconComponent className="w-4 h-4 text-primary" />
-                                            </div>
-                                            <div>
-                                                <h3 className="font-semibold text-white text-sm">
-                                                    {guidance.title}
-                                                </h3>
-                                                <p className="text-xs text-slate-400 mt-1">
-                                                    {guidance.description}
-                                                </p>
-                                            </div>
-                                        </motion.div>
-                                    );
-                                })}
+                                        return (
+                                            <motion.div
+                                                key={field}
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 bg-white/5 border border-white/10 rounded-xl"
+                                            >
+                                                <div className="p-1.5 sm:p-2 bg-primary/20 rounded-lg shrink-0">
+                                                    <IconComponent className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-semibold text-white text-xs sm:text-sm">
+                                                        {guidance.title}
+                                                    </h3>
+                                                    <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5 sm:mt-1">
+                                                        {guidance.description}
+                                                    </p>
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Footer */}
-                        <div className="p-4 border-t border-white/10">
-                            <button
-                                onClick={onClose}
-                                className="w-full py-2.5 bg-primary text-black font-bold rounded-xl hover:bg-primary/90 transition-colors"
-                            >
-                                Got it!
-                            </button>
-                        </div>
-                    </motion.div>
+                            {/* Footer */}
+                            <div className="p-3 sm:p-4 border-t border-white/10">
+                                <button
+                                    onClick={onClose}
+                                    className="w-full py-2 sm:py-2.5 bg-primary text-black font-bold rounded-xl hover:bg-primary/90 transition-colors text-sm sm:text-base"
+                                >
+                                    Got it!
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
                 </>
             )}
         </AnimatePresence>
