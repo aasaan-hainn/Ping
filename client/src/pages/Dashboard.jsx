@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSocket } from "../context/SocketContext";
@@ -367,7 +367,7 @@ const GameLogo = ({ gameName, supportedGames, className }) => {
 };
 
 // --- Socials Display Component ---
-const SocialsDisplay = ({ socials, isOwnProfile, onEdit }) => {
+const SocialsDisplay = React.memo(({ socials, isOwnProfile, onEdit }) => {
   const socialConfig = [
     {
       key: "twitter",
@@ -519,7 +519,7 @@ const SocialsDisplay = ({ socials, isOwnProfile, onEdit }) => {
       )}
     </div>
   );
-};
+});
 
 // --- Game Edit Modal ---
 const GameEditModal = ({
@@ -1930,7 +1930,7 @@ const TeamHistoryCard = ({ team }) => (
 );
 
 // --- Team History Timeline ---
-const TeamHistoryTimeline = ({
+const TeamHistoryTimeline = React.memo(({
   teams,
   isOwnProfile,
   onEdit,
@@ -2089,10 +2089,10 @@ const TeamHistoryTimeline = ({
       </div>
     </motion.div>
   );
-};
+});
 
 // --- Experience and Tournaments ---
-const ExperienceTournaments = ({
+const ExperienceTournaments = React.memo(({
   tournaments,
   isOwnProfile,
   onEdit,
@@ -2184,10 +2184,10 @@ const ExperienceTournaments = ({
       )}
     </div>
   </motion.div>
-);
+));
 
 // --- Setup & Config ---
-const SetupConfig = ({ setup, isOwnProfile, onEdit, onCopy, copiedField }) => (
+const SetupConfig = React.memo(({ setup, isOwnProfile, onEdit, onCopy, copiedField }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -2295,10 +2295,10 @@ const SetupConfig = ({ setup, isOwnProfile, onEdit, onCopy, copiedField }) => (
       </div>
     </div>
   </motion.div>
-);
+));
 
 // --- Skills Section ---
-const SkillsSection = ({
+const SkillsSection = React.memo(({
   skills = [],
   isOwnProfile,
   onAddSkill,
@@ -2409,7 +2409,7 @@ const SkillsSection = ({
       </div>
     </motion.div>
   );
-};
+});
 
 // --- Edit Modal Base Component ---
 const EditModal = ({ open, onClose, title, children }) => (
@@ -3543,7 +3543,7 @@ const Dashboard = () => {
   }, [user, viewedUsername, isOwnProfile]);
 
   // Team handlers
-  const handleSaveTeam = async (formData, teamId) => {
+  const handleSaveTeam = useCallback(async (formData, teamId) => {
     try {
       if (teamId) {
         const res = await profileService.updateTeam(teamId, formData);
@@ -3556,19 +3556,19 @@ const Dashboard = () => {
       console.error("Failed to save team", error);
       throw error;
     }
-  };
+  }, []);
 
-  const handleDeleteTeam = async (teamId) => {
+  const handleDeleteTeam = useCallback(async (teamId) => {
     try {
       const res = await profileService.deleteTeam(teamId);
       setTeams(res.data);
     } catch (error) {
       console.error("Failed to delete team", error);
     }
-  };
+  }, []);
 
   // Game handlers
-  const handleSaveGame = async (formData, gameId) => {
+  const handleSaveGame = useCallback(async (formData, gameId) => {
     try {
       if (gameId) {
         const res = await profileService.updateGame(gameId, formData);
@@ -3581,19 +3581,19 @@ const Dashboard = () => {
       console.error("Failed to save game", error);
       throw error;
     }
-  };
+  }, []);
 
-  const handleDeleteGame = async (gameId) => {
+  const handleDeleteGame = useCallback(async (gameId) => {
     try {
       const res = await profileService.deleteGame(gameId);
       setGameExperiences(res.data);
     } catch (error) {
       console.error("Failed to delete game", error);
     }
-  };
+  }, []);
 
   // Tournament handlers
-  const handleSaveTournament = async (formData, tournamentId) => {
+  const handleSaveTournament = useCallback(async (formData, tournamentId) => {
     try {
       if (tournamentId) {
         const res = await profileService.updateTournament(
@@ -3609,19 +3609,19 @@ const Dashboard = () => {
       console.error("Failed to save tournament", error);
       throw error;
     }
-  };
+  }, []);
 
-  const handleDeleteTournament = async (tournamentId) => {
+  const handleDeleteTournament = useCallback(async (tournamentId) => {
     try {
       const res = await profileService.deleteTournament(tournamentId);
       setTournaments(res.data);
     } catch (error) {
       console.error("Failed to delete tournament", error);
     }
-  };
+  }, []);
 
   // Setup handler
-  const handleSaveSetup = async (formData) => {
+  const handleSaveSetup = useCallback(async (formData) => {
     try {
       const res = await profileService.updateSetup(formData);
       setGamingSetup(res.data);
@@ -3629,10 +3629,10 @@ const Dashboard = () => {
       console.error("Failed to save setup", error);
       throw error;
     }
-  };
+  }, []);
 
   // Socials handler
-  const handleSaveSocials = async (formData) => {
+  const handleSaveSocials = useCallback(async (formData) => {
     try {
       const res = await profileService.updateSocials(formData);
       setSocials(res.data);
@@ -3640,15 +3640,15 @@ const Dashboard = () => {
       console.error("Failed to save socials", error);
       throw error;
     }
-  };
+  }, []);
 
   // Copy to clipboard handler
-  const handleCopy = (text, field) => {
+  const handleCopy = useCallback((text, field) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedField(field);
       setTimeout(() => setCopiedField(null), 2000);
     });
-  };
+  }, []);
 
   // Open chat from notification
   const openChatWithUser = (sender) => {
@@ -3704,7 +3704,7 @@ const Dashboard = () => {
   };
 
   // Skills Handlers
-  const handleAddSkill = async (skill) => {
+  const handleAddSkill = useCallback(async (skill) => {
     try {
       const updatedSkills = [...(displayUser?.skills || []), skill];
       await userService.updateProfile({ skills: updatedSkills });
@@ -3712,9 +3712,9 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Failed to add skill", error);
     }
-  };
+  }, [displayUser]);
 
-  const handleRemoveSkill = async (skillToRemove) => {
+  const handleRemoveSkill = useCallback(async (skillToRemove) => {
     try {
       const updatedSkills = (displayUser?.skills || []).filter(
         (s) => s !== skillToRemove,
@@ -3724,7 +3724,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Failed to remove skill", error);
     }
-  };
+  }, [displayUser]);
 
   // --- Mock Data --- (REMOVED: games array)
 
